@@ -1,20 +1,44 @@
-import { ReactElement } from "react";
+import React, { ComponentType, ReactElement } from "react";
+
+interface ComponentRegistry {
+  [key: string]: ComponentType<any>;
+}
 
 export class Hydra {
   private key: string;
-  private componentList: { [key: string]: ReactElement } = {};
+  private componentList: ComponentRegistry = {};
 
-  constructor(userKey: string, componentList: ReactElement[]) {
-    this.key = userKey;
+  constructor(key: string) {
+    this.key = key;
   }
 
-  public registerComponent(component: ReactElement) {
-    // something like: this.componentList[component.type] = component;
+  public registerComponent(name: string, component: ComponentType<any>): void {
+    if (!this.componentList[name]) {
+      this.componentList[name] = component;
+    } else {
+      throw new Error(`Component ${name} is already registered.`);
+    }
   }
 
   public async generateComponent(message: string): Promise<ReactElement> {
-    //TODO: use ai to pick component
-    const chosenComponentKey = "testComp";
-    return this.componentList[chosenComponentKey];
+    const context = { chatMessage: message };
+    // const response = await callAI
+    const response = {
+      data: {
+        componentName: "ChatMessage",
+        props: {
+          message: context.chatMessage,
+        },
+      },
+    };
+
+    const { componentName, props } = response.data;
+    const component = this.componentList[componentName];
+
+    if (!component) {
+      throw new Error(`Component ${componentName} is not registered.`);
+    }
+
+    return React.createElement(component, props);
   }
 }

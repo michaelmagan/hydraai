@@ -28,7 +28,7 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-        "react": ">=16.14.0",
+    "react": ">=16.14.0",
     "@types/react": ">=16.14.0"
   }
 }
