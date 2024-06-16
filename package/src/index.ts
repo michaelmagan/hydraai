@@ -1,3 +1,3 @@
-import { generateComponent } from "./hydra-ai/hydra-ai";
+import { Hydra } from "./hydra-ai/hydra-ai";
 
-export default generateComponent;
+export default Hydra;

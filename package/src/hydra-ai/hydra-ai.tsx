@@ -1,16 +1,20 @@
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 
-const TestComp: React.FC = () => {
-  return <div>test</div>;
-};
+export class Hydra {
+  private key: string;
+  private componentList: { [key: string]: ReactElement } = {};
 
-export const generateComponent = async (
-  message: string
-): Promise<ReactElement> => {
-  //TODO: use ai to pick component
-  return componentList["testComp"];
-};
+  constructor(userKey: string, componentList: ReactElement[]) {
+    this.key = userKey;
+  }
 
-const componentList: { [key: string]: ReactElement } = {
-  testComp: <TestComp />,
-};
+  public registerComponent(component: ReactElement) {
+    // something like: this.componentList[component.type] = component;
+  }
+
+  public async generateComponent(message: string): Promise<ReactElement> {
+    //TODO: use ai to pick component
+    const chosenComponentKey = "testComp";
+    return this.componentList[chosenComponentKey];
+  }
+}
