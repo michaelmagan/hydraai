@@ -1,6 +1,6 @@
 {
   "name": "hydra-ai",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/index.js",
   "files": [
@@ -29,7 +29,7 @@
   "peerDependencies": {
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "typescript": "^5.3.3"
+    "typescript": ">=5.0.0"
   },
   "dependencies": {
     "@langchain/openai": "^0.1.3"
