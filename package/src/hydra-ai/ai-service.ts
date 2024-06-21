@@ -26,12 +26,11 @@ export default class AIService {
             description: "The name of the chosen component",
           },
           props: {
-            type: "array",
+            type: "object",
             description:
               "The props that should be used in the chosen component. These will be injected by using React.createElement(component, props)",
-            items: {
-              type: "string",
-            },
+            properties: {},
+            additionalProperties: true,
           },
         },
         required: ["componentName", "props"],
@@ -40,8 +39,11 @@ export default class AIService {
     const response = await structuredLlm.invoke(`
         You are a UI/UX designer that decides what component should be rendered based on what the user interaction is.
         You have a list of available components, and you should choose one of them.
-        the list of available components is: ${context.availableComponentNames.join()}
-        and the latest user message is: ${context.chatMessage}`);
+        Each component has a name and a set of props that you can use.
+        Here is the list of available components with their props: ${JSON.stringify(
+          context.availableComponents
+        )}
+        The latest user message is: ${context.chatMessage}`);
     return response as ComponentChoice;
   };
 }
