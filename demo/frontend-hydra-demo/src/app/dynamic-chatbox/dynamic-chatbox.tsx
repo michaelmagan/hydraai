@@ -9,7 +9,6 @@ export default function DynamicChatbox() {
 
   const handleSendMessage = async (text: string) => {
     if (!text) return;
-    console.log("Sending message:", text);
     const userMessage: DynamicMessage = {
       who: "Input",
       message: text,
@@ -17,7 +16,6 @@ export default function DynamicChatbox() {
     };
     setMessageHistory((prevHistory) => [...prevHistory, userMessage]);
     await processUserMessage(text);
-    setInputMessage("");
   };
 
   const processUserMessage = async (message: string) => {
@@ -26,12 +24,11 @@ export default function DynamicChatbox() {
         messageHistory
       )} latest message: ${message}`
     );
-    console.log("Response:", response);
     const hydraMessage: DynamicMessage = {
       component: response,
       who: "HydraAI",
       type: "component",
-      message: "Here is your component rendered by HydraAI",
+      message: "",
     };
     setMessageHistory((prevHistory) => [...prevHistory, hydraMessage]);
   };

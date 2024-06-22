@@ -1,4 +1,4 @@
-import Hydra from "hydra-ai-backup";
+import Hydra from "hydra-ai";
 import HistoricalEventCard from "../components/historical-event-card";
 import HistoricalFigureCard from "../components/historical-figure-card";
 import HistoricalQuote from "../components/historical-quote";
