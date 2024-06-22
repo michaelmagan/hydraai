@@ -21,7 +21,11 @@ export default function DynamicChatbox() {
   };
 
   const processUserMessage = async (message: string) => {
-    const response = await generateDynamicMessage(message);
+    const response = await generateDynamicMessage(
+      `previous messages ${JSON.stringify(
+        messageHistory
+      )} latest message: ${message}`
+    );
     console.log("Response:", response);
     const hydraMessage: DynamicMessage = {
       component: response,
