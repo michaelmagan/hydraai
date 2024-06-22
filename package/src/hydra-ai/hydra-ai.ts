@@ -1,11 +1,8 @@
 import React, { ComponentType, ReactElement } from "react";
 import AIService from "./ai-service";
-import { ComponentPropsMetadata, InputContext } from "./model/input-context";
-
-interface ComponentMetadata {
-  component: ComponentType<any>;
-  props: ComponentPropsMetadata;
-}
+import { ComponentMetadata } from "./model/component-metadata";
+import { ComponentPropsMetadata } from "./model/component-props-metadata";
+import { InputContext } from "./model/input-context";
 
 interface ComponentRegistry {
   [key: string]: ComponentMetadata;
