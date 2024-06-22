@@ -3,17 +3,25 @@ import { DynamicMessage } from "../model/dynamic-message";
 import { generateDynamicMessage } from "../services/component-gen.service";
 import DynamicMessageHistory from "./dynamic-message-history";
 
-const initialMessage: DynamicMessage = {
-  who: "HydraAI",
-  message:
-    "Hello! Hydra is a package that lets you register components, and lets AI choose them based on context. This is a demo weather app that registers components for displaying weather info. Try typing 'show me the weather today' ",
-  type: "text",
-};
+const initialMessages: DynamicMessage[] = [
+  {
+    who: "HydraAI",
+    message:
+      "Hello! Hydra is a package that lets you register components, and lets AI choose them based on context. This is a demo weather app that registers components for displaying weather info, and tries to show the ones you care about.",
+    type: "text",
+  },
+  {
+    who: "HydraAI",
+    message:
+      "Try typing 'show me the current weather' or 'show me the rain forecast for the next week.'",
+    type: "text",
+  },
+];
 
 export default function DynamicChatbox() {
   const [inputMessage, setInputMessage] = useState("");
   const [messageHistory, setMessageHistory] = useState<DynamicMessage[]>([
-    initialMessage,
+    ...initialMessages,
   ]);
 
   const handleSendMessage = async (text: string) => {
