@@ -68,9 +68,6 @@ export default class AIService {
     model: string,
     jsonMode: boolean = false
   ): Promise<string> {
-    console.log("Requesting response from OpenAI...");
-    const startTime = Date.now();
-
     const response = await this.model.chat.completions.create({
       model: model,
       messages: [
@@ -87,9 +84,6 @@ export default class AIService {
       response_format: jsonMode ? { type: "json_object" } : undefined,
     });
 
-    const endTime = Date.now();
-    const duration = (endTime - startTime) / 1000;
-    console.log(`Response received from OpenAI in ${duration} seconds.`);
     const responseContent = response.choices[0].message.content || "";
     return responseContent;
   }
