@@ -20,6 +20,7 @@ const initialMessages: DynamicMessage[] = [
 
 export default function DynamicChatbox() {
   const [inputMessage, setInputMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [messageHistory, setMessageHistory] = useState<DynamicMessage[]>([
     ...initialMessages,
   ]);
@@ -36,6 +37,7 @@ export default function DynamicChatbox() {
   };
 
   const processUserMessage = async (message: string) => {
+    setIsLoading(true);
     const response = await generateDynamicMessage(
       `previous messages ${JSON.stringify(
         messageHistory
@@ -47,6 +49,7 @@ export default function DynamicChatbox() {
       type: "component",
       message: "",
     };
+    setIsLoading(false);
     setMessageHistory((prevHistory) => [...prevHistory, hydraMessage]);
   };
 
@@ -60,6 +63,7 @@ export default function DynamicChatbox() {
   return (
     <div className="flex flex-col bg-black text-white p-4 w-full">
       <DynamicMessageHistory messages={messageHistory} />
+      {isLoading && <div className="text-center">Loading...</div>}
       <div className="flex items-center bg-gray-900 rounded-lg p-2 fixed bottom-4  w-1/3">
         <input
           type="text"
