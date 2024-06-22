@@ -9,8 +9,8 @@ const RainChart: React.FC<RainChartProps> = ({ data }) => {
   const chartHeight = 48;
 
   return (
-    <div className="p-6 rounded-lg my-4 bg-white text-blue-500">
-      <h2 className="text-lg font-bold mb-4">Hourly Rainfall</h2>
+    <div className="p-6 rounded-lg my-4 bg-white text-black">
+      <p>rain amounts</p>
       <div className="overflow-x-auto">
         <div className="flex justify-between items-end h-48">
           {data.map((point, index) => (

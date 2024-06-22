@@ -1,7 +1,7 @@
 import React from "react";
 
 export interface WeatherData {
-  time: string; // could be an hour (e.g., "1 AM") or a day (e.g., "Monday")
+  hourOrDay: string; // could be an hour (e.g., "1 AM") or a day (e.g., "Monday")
   temperature: number;
   condition: "rain" | "sun" | "cloud" | "snow" | "partly-cloudy";
 }
@@ -27,17 +27,17 @@ const WeatherTimeChart: React.FC<WeatherTimeChartProps> = ({ data }) => {
 
   return (
     <div className="p-6 rounded-lg my-4 bg-white text-black">
-      <div className="overflow-x-auto">
-        <p>Forecast</p>
-        <div className="flex justify-between items-center h-48">
-          {data.map((point, index) => (
-            <div key={index} className="flex flex-col items-center mx-2">
-              <div className="text-4xl">{getWeatherIcon(point.condition)}</div>
-              <div className="text-lg font-bold">{point.temperature}°</div>
-              <span className="mt-2 text-sm text-gray-600">{point.time}</span>
-            </div>
-          ))}
-        </div>
+      <p>Forecast</p>
+      <div className="flex justify-between items-center h-48 overflow-x-auto">
+        {data.map((point, index) => (
+          <div key={index} className="flex flex-col items-center mx-2">
+            <div className="text-4xl">{getWeatherIcon(point.condition)}</div>
+            <div className="text-lg font-bold">{point.temperature}°</div>
+            <span className="mt-2 text-sm text-gray-600 text-center">
+              {point.hourOrDay}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );
