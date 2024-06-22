@@ -34,6 +34,7 @@ export default class AIService {
       You have a list of available components, and you should choose one of them.
       Each component has a name and a set of props that you can use.
       Here is the list of available components with their props:
+      ${JSON.stringify(context.availableComponents)}
       ${this.generateZodTypePrompt(schema)} 
       The latest user message is: ${context.chatMessage}
     `;
