@@ -1,19 +1,35 @@
 import Hydra from "hydra-ai-backup";
-import { TodoItemCard } from "../components/todo-item-card";
-import { TodoList } from "../components/todo-list";
+import HistoricalEventCard from "../components/historical-event-card";
+import HistoricalFigureCard from "../components/historical-figure-card";
+import HistoricalQuote from "../components/historical-quote";
+import TimelineCard from "../components/timeline-card";
 
 export const initHydra = (openAIKey: string) => {
   const hydra = new Hydra(openAIKey);
 
-  hydra.registerComponent("todoItemCard", TodoItemCard, {
+  hydra.registerComponent("HistoricalEventCard", HistoricalEventCard, {
     title: "string",
+    date: "string",
     description: "string",
-    completed: "boolean",
   });
 
-  hydra.registerComponent("todoList", TodoList, {
-    items: "array",
-    onToggleDone: "function",
+  hydra.registerComponent("HistoricalFigureCard", HistoricalFigureCard, {
+    name: "string",
+    birthDate: "string",
+    deathDate: "string",
+    bio: "string",
   });
+
+  hydra.registerComponent("TimelineCard", TimelineCard, {
+    period: "string",
+    events: "Array<{ year: string, event: string }>",
+  });
+
+  hydra.registerComponent("HistoricalQuote", HistoricalQuote, {
+    quote: "string",
+    author: "string",
+    year: "string",
+  });
+
   return hydra;
 };
