@@ -1,5 +1,4 @@
-import Hydra from "hydra-ai";
-
+import Hydra from "hydra-ai-backup";
 import ProfilePhotosRow from "../components/profile-photos-row";
 import { ProfilePhotoPropsArray } from "../components/types";
 

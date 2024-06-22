@@ -24,7 +24,7 @@ export default function DynamicChatbox() {
     const response = await generateDynamicMessage(message);
     console.log("Response:", response);
     const hydraMessage: DynamicMessage = {
-      ...response,
+      component: response,
       who: "HydraAI",
       type: "component",
       message: "Here is your component rendered by HydraAI",

@@ -1,7 +1,7 @@
 "use server";
 
-import { initHydra } from "./hydra";
 import React from "react";
+import { initHydra } from "./hydra";
 
 export const generateDynamicMessage = async (
   message: string
