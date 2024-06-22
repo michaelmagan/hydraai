@@ -1,8 +1,8 @@
 import "server-only"; // So this only runs on a server component.
 
+import { OpenAI } from "openai";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { OpenAI } from "openai";
 import { ComponentChoice } from "./model/component-choice";
 import { InputContext } from "./model/input-context";
 
@@ -15,9 +15,7 @@ export default class AIService {
     });
   }
 
-  chooseComponent = async (
-    context: z.infer<typeof InputContext>
-  ): Promise<ComponentChoice> => {
+  chooseComponent = async (context: InputContext): Promise<ComponentChoice> => {
     const schema = z.object({
       componentName: z.string().describe("The name of the chosen component"),
       props: z
