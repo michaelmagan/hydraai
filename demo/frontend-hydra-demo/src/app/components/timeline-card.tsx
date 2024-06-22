@@ -4,42 +4,13 @@ const TimelineCard: React.FC<{
   period: string;
   events: { year: string; event: string }[];
 }> = ({ period, events }) => (
-  <div
-    style={{
-      border: "1px solid #6C757D",
-      padding: "15px",
-      borderRadius: "10px",
-      margin: "15px 0",
-      backgroundColor: "#F8F9FA",
-      color: "#6C757D",
-      position: "relative",
-    }}
-  >
-    <h2 style={{ margin: "0 0 10px 0" }}>{period}</h2>
-    <div
-      style={{
-        position: "absolute",
-        left: "20px",
-        top: "40px",
-        bottom: "10px",
-        width: "2px",
-        backgroundColor: "#6C757D",
-      }}
-    ></div>
-    <ul style={{ listStyleType: "none", paddingLeft: "40px" }}>
+  <div className="relative border border-gray-400 p-4 rounded-lg my-4 bg-white text-gray-700">
+    <h2 className="mb-2">{period}</h2>
+    <div className="absolute left-5 top-10 bottom-2 w-1 bg-blue-500"></div>
+    <ul className="list-none pl-10">
       {events.map((e, index) => (
-        <li key={index} style={{ position: "relative", marginBottom: "20px" }}>
-          <div
-            style={{
-              position: "absolute",
-              left: "-39px",
-              top: "5px",
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              backgroundColor: "#6C757D",
-            }}
-          ></div>
+        <li key={index} className="relative mb-5">
+          <div className="absolute left-[-39px] top-1 w-2.5 h-2.5 rounded-full bg-blue-500"></div>
           <strong>{e.year}</strong>: {e.event}
         </li>
       ))}

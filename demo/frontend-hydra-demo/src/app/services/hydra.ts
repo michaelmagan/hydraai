@@ -18,6 +18,7 @@ export const initHydra = (openAIKey: string) => {
     birthDate: "string",
     deathDate: "string",
     bio: "string",
+    awards: "string",
   });
 
   hydra.registerComponent("TimelineCard", TimelineCard, {
