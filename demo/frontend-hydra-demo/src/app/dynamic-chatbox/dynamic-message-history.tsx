@@ -1,5 +1,4 @@
 import { DynamicMessage } from "../model/dynamic-message";
-import ProfilePhotosRow from "../components/profile-photos-row";
 
 interface DynamicMessageHistoryProps {
   messages: DynamicMessage[];
