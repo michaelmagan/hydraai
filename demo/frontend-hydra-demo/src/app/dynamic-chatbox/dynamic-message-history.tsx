@@ -29,9 +29,7 @@ export default function DynamicMessageHistory({
             <p className="whitespace-pre-line text-gray-300">
               {message.message}
             </p>
-            {message.type === "profile_photos_row" && (
-              <ProfilePhotosRow {...message.componentData} />
-            )}
+            {message.type === "component" && message.component}
           </div>
         ))}
         <div ref={messagesEndRef} />
