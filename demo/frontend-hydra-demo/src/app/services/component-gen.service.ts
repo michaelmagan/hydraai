@@ -9,5 +9,5 @@ export const generateDynamicMessage = async (
   const hydra = initHydra(process.env.OPENAI_API_KEY ?? "");
   const response = await hydra.generateComponent(message);
   console.log("Response:", response);
-  return response;
+  return response as React.ReactElement;
 };
