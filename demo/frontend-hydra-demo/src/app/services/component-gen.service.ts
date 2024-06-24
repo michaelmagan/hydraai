@@ -10,9 +10,9 @@ export const generateDynamicMessage = async (
   const response = await hydra.generateComponent(message);
   console.log("Response:", response);
   return {
-    who: "bot",
+    who: "Hydra AI",
     message: message,
-    type: "test",
-    componentData: response,
+    type: response.type,
+    componentData: response.props,
   };
 };

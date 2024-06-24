@@ -1,6 +1,6 @@
 export interface DynamicMessage {
   who: string;
   message?: string;
-  type: string;
+  type: any;
   componentData?: any;
 }
