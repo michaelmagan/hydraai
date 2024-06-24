@@ -6,8 +6,10 @@ import { ProfilePhotoPropsArray } from "../components/types";
 export const initHydra = (openAIKey: string) => {
   const hydra = new Hydra(openAIKey);
 
-  hydra.registerComponent("profilephotosrow", ProfilePhotosRow, {
-    photos: ProfilePhotoPropsArray,
-  });
+  hydra.registerComponent(
+    "profilephotosrow",
+    ProfilePhotosRow,
+    ProfilePhotoPropsArray
+  );
   return hydra;
 };
