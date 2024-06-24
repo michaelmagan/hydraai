@@ -26,13 +26,15 @@ export default class AIService {
         ),
     });
 
+    // ToDo: We will need to chain these as two steps because otherwise the prompt needs to
+    // include every components props. That would make the prompt too big and the model would
+    // struggle to understand it. -- Magán
     const prompt = `
       You are a UI/UX designer that decides what component should be rendered based on what the user interaction is.
       You have a list of available components, and you should choose one of them.
       Each component has a name and a set of props that you can use.
-      Here is the list of available components with their props: ${JSON.stringify(
-        context.availableComponents
-      )}
+      Here is the list of available components with their props:
+      ${this.generateZodTypePrompt(schema)} 
       The latest user message is: ${context.chatMessage}
     `;
 

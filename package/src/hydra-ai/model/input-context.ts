@@ -5,7 +5,7 @@ const InputContextSchema = z.object({
   chatMessage: z.string(),
   availableComponents: z.array(
     z.object({
-      name: z.string(),
+      componentName: z.string(),
       props: ComponentPropsMetadataSchema,
     })
   ),

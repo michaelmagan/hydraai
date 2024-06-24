@@ -34,7 +34,7 @@ export default class Hydra {
     const context: InputContext = {
       chatMessage: message,
       availableComponents: Object.keys(this.componentList).map((name) => ({
-        name,
+        componentName: name,
         props: this.componentList[name].props,
       })),
     };
