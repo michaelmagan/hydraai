@@ -15,7 +15,9 @@ export default class AIService {
     });
   }
 
-  chooseComponent = async (context: InputContext): Promise<ComponentChoice> => {
+  chooseComponent = async (
+    context: z.infer<typeof InputContext>
+  ): Promise<ComponentChoice> => {
     const schema = z.object({
       componentName: z.string().describe("The name of the chosen component"),
       props: z

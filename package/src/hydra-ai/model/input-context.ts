@@ -1,11 +1,12 @@
-export interface ComponentPropsMetadata {
-  [key: string]: any;
-}
+import { z } from "zod";
 
-export interface InputContext {
-  chatMessage: string;
-  availableComponents: {
-    name: string;
-    props: ComponentPropsMetadata;
-  }[];
-}
+export const ComponentPropsMetadata = z.any();
+export const InputContext = z.object({
+  chatMessage: z.string(),
+  availableComponents: z.array(
+    z.object({
+      name: z.string(),
+      props: ComponentPropsMetadata,
+    })
+  ),
+});
