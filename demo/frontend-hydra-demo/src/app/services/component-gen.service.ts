@@ -5,9 +5,13 @@ import React from "react";
 
 export const generateDynamicMessage = async (
   message: string
-): Promise<React.ReactElement> => {
+): Promise<{
+  componentName: string;
+  explanation: string;
+  hydratedComponent: React.ReactElement;
+}> => {
   const hydra = initHydra(process.env.OPENAI_API_KEY ?? "");
-  const response = await hydra.generateComponent(message);
+  const response = await hydra.handleMessage(message);
   console.log("Response:", response);
-  return response as React.ReactElement;
+  return response;
 };

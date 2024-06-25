@@ -30,7 +30,13 @@ export default class Hydra {
     }
   }
 
-  public async generateComponent(message: string): Promise<ReactElement> {
+  public async handleMessage(
+    message: string
+  ): Promise<{
+    componentName: string;
+    explanation: string;
+    hydratedComponent: ReactElement;
+  }> {
     const context: InputContext = {
       chatMessage: message,
       availableComponents: Object.keys(this.componentList).map((name) => ({
@@ -39,14 +45,39 @@ export default class Hydra {
       })),
     };
     const componentChoice = await this.aiService.chooseComponent(context);
-    const componentEntry = this.componentList[componentChoice.componentName];
+    const hydratedComponent = await this.hydrateComponent(
+      componentChoice.componentName,
+      message
+    );
+    return {
+      componentName: componentChoice.componentName,
+      explanation: componentChoice.explanation,
+      hydratedComponent: hydratedComponent,
+    };
+  }
+
+  async hydrateComponent(
+    componentName: string,
+    message: string
+  ): Promise<ReactElement> {
+    const componentEntry = this.componentList[componentName];
 
     if (!componentEntry) {
       throw new Error(
-        `Hydra tried to use Component ${componentChoice.componentName}, but it was not found.`
+        `Hydra tried to use Component ${componentName}, but it was not found.`
       );
     }
 
-    return React.createElement(componentEntry.component, componentChoice.props);
+    const context: InputContext = {
+      chatMessage: message,
+      availableComponents: Object.keys(this.componentList).map((name) => ({
+        componentName: name,
+        props: this.componentList[name].props,
+      })),
+    };
+
+    const props = await this.aiService.hydrateComponent(context, componentName);
+
+    return React.createElement(componentEntry.component, props);
   }
 }

@@ -18,33 +18,71 @@ export default class AIService {
   chooseComponent = async (context: InputContext): Promise<ComponentChoice> => {
     const schema = z.object({
       componentName: z.string().describe("The name of the chosen component"),
-      props: z
-        .object({})
-        .passthrough()
-        .describe(
-          "The props that should be used in the chosen component. These will be injected by using React.createElement(component, props)"
-        ),
+      explanation: z
+        .string()
+        .describe("An explanation of why this component was chosen"),
     });
 
-    // ToDo: We will need to chain these as two steps because otherwise the prompt needs to
-    // include every components props. That would make the prompt too big and the model would
-    // struggle to understand it. -- Magán
     const prompt = `
-      You are a UI/UX designer that decides what component should be rendered based on what the user interaction is.
+      You are a UI/UX designer that decides what component should be rendered based on user interaction.
       You have a list of available components, and you should choose one of them.
-      Each component has a name and a set of props that you can use.
-      Here is the list of available components with their props:
-      ${this.generateZodTypePrompt(schema)} 
+      Choose the most appropriate component based on the user's message.
+      Here is the list of available components:
+      ${context.availableComponents.map((c) => c.componentName).join(", ")}
+      
       The latest user message is: ${context.chatMessage}
+
+      Respond with the chosen component name and a brief explanation of why you chose it.
+      ${this.generateZodTypePrompt(schema)}
+
+    
     `;
 
     const response = await this.callStructuredOpenAI(
       prompt,
-      "You are a frontend developer, designer and copywriter extraordinaire.",
+      "You are a frontend developer, designer and copywriter extraordinaire. Provide concise and relevant responses.",
       schema
     );
 
     return response as ComponentChoice;
+  };
+
+  hydrateComponent = async (
+    context: InputContext,
+    componentName: string
+  ): Promise<{ componentProps: any }> => {
+    const selectedComponent = context.availableComponents.find(
+      (c) => c.componentName === componentName
+    );
+    if (!selectedComponent) {
+      console.error(
+        `Component ${componentName} not found in available components.`
+      );
+      throw new Error(
+        `Component ${componentName} not found in available components.`
+      );
+    }
+
+    const prompt = `
+      You are a UI/UX designer that decides how to populate a component with data based on user interaction.
+      You have been given a component name and need to provide appropriate props for it.
+      
+      The latest user message is: ${context.chatMessage}
+
+      Respond with the appropriate props for ${componentName} based on the user's message:
+      ${this.generateZodTypePrompt(selectedComponent.props)}
+    `;
+
+    console.log(
+      "Calling structured OpenAI for component hydration with prompt:",
+      prompt
+    );
+    const response = await this.callStructuredOpenAI(
+      prompt,
+      "You are a frontend developer with expertise in component design. Provide concise and relevant responses.",
+      selectedComponent.props
+    );
+    return response;
   };
 
   async callStructuredOpenAI(
