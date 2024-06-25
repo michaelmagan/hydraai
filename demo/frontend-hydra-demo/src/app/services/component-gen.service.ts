@@ -1,6 +1,6 @@
 "use server";
 
-import Hydra from "hydra-ai-backup";
+import Hydra from "hydra-ai";
 import { ReactElement } from "react";
 import { initHydra } from "./hydra";
 

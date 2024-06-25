@@ -1,9 +1,20 @@
-export interface TodoItem {
-  id: string;
-  title: string;
-  isDone: boolean;
-}
+import { z } from "zod";
 
+export const TodoItemSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  isDone: z.enum(["true", "false"]),
+});
+
+export type TodoItem = z.infer<typeof TodoItemSchema>;
+
+export type TodoItemCardProps = z.infer<typeof TodoItemSchema>;
+
+export const TodoListPropsSchema = z.object({
+  items: z.array(TodoItemSchema),
+});
+
+export type TodoListProps = z.infer<typeof TodoListPropsSchema>;
 export const testItems = [
   {
     id: "0",

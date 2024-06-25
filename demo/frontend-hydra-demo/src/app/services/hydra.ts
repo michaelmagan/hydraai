@@ -1,19 +1,15 @@
-import Hydra from "hydra-ai-backup";
+import Hydra from "hydra-ai";
+
 import { TodoItemCard } from "../components/todo-item-card";
 import { TodoList } from "../components/todo-list";
+import { TodoItemSchema, TodoListPropsSchema } from "../model/todo-item";
 
 export const initHydra = (openAIKey: string) => {
   const hydra = new Hydra(openAIKey);
 
-  hydra.registerComponent("todoItemCard", TodoItemCard, {
-    title: "string",
-    description: "string",
-    completed: "boolean",
-  });
+  hydra.registerComponent("todoItemCard", TodoItemCard, TodoItemSchema);
 
-  hydra.registerComponent("todoList", TodoList, {
-    items: "array",
-    onToggleDone: "function",
-  });
+  hydra.registerComponent("todoList", TodoList, TodoListPropsSchema);
+
   return hydra;
 };

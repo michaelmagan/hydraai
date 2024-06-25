@@ -1,36 +1,40 @@
 import React from "react";
-
-interface TodoItemCardProps {
-  title: string;
-  isDone: boolean;
-  onToggle?: () => void;
-}
+import { TodoItemCardProps } from "../model/todo-item";
 
 export const TodoItemCard: React.FC<TodoItemCardProps> = ({
   title,
   isDone,
-  onToggle,
 }) => {
+  const isDoneBoolean = isDone === "true";
+  // TODO: openAI json mode only supports strings.
+  // Right now all of your types need to be strings.
+  // And you need to convert them to the correct type before using them.
+  // i.e. datetime, boolean, number, etc.
+  // In a future version we will handle this inside hydra
+  // convert your types to strings, and then convert them to the correct type
+  // before returning them to the client.
+
   return (
     <div
       className={`flex items-center p-4 border rounded-lg text-black ${
-        isDone ? "bg-green-100" : "bg-white"
+        isDoneBoolean ? "bg-green-100" : "bg-white"
       } shadow-sm`}
     >
-      <input
-        type="checkbox"
-        checked={isDone}
-        onChange={onToggle}
-        className="mr-4"
-      />
+      <input type="checkbox" checked={isDoneBoolean} className="mr-4" />
       <div>
-        <h2 className={`text-lg font-semibold ${isDone ? "line-through" : ""}`}>
+        <h2
+          className={`text-lg font-semibold ${
+            isDoneBoolean ? "line-through" : ""
+          }`}
+        >
           {title}
         </h2>
         <span
-          className={`text-sm ${isDone ? "text-green-600" : "text-gray-600"}`}
+          className={`text-sm ${
+            isDoneBoolean ? "text-green-600" : "text-gray-600"
+          }`}
         >
-          {isDone ? "Completed" : "Pending"}
+          {isDoneBoolean ? "Completed" : "Pending"}
         </span>
       </div>
     </div>

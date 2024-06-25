@@ -1,21 +1,16 @@
 import React from "react";
-import { TodoItem } from "../model/todo-item";
+import { TodoListProps } from "../model/todo-item";
 import { TodoItemCard } from "./todo-item-card";
 
-interface TodoListProps {
-  items: TodoItem[];
-  onToggleDone: (id: string) => void;
-}
-
-export const TodoList: React.FC<TodoListProps> = ({ items, onToggleDone }) => {
+export const TodoList: React.FC<TodoListProps> = ({ items }) => {
   return (
     <div className="space-y-4">
       {items.map((item) => (
         <TodoItemCard
           key={item.id}
+          id={item.id}
           title={item.title}
           isDone={item.isDone}
-          onToggle={() => onToggleDone(item.id)}
         />
       ))}
     </div>
