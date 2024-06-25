@@ -20,7 +20,9 @@ export default class AIService {
       componentName: z.string().describe("The name of the chosen component"),
       explanation: z
         .string()
-        .describe("An explanation of why this component was chosen"),
+        .describe(
+          "Describe what you are going to do with the users message and the chosen componenet."
+        ),
     });
 
     const prompt = `
