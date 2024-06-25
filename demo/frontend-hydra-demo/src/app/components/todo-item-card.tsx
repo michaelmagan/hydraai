@@ -1,11 +1,14 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { TodoItemCardProps } from "../model/todo-item";
 
 export const TodoItemCard: React.FC<TodoItemCardProps> = ({
   title,
   isDone,
 }) => {
-  const isDoneBoolean = isDone === "true";
+  const [isDoneBoolean, setIsDoneBoolean] = useState(isDone === "true");
+
   // TODO: openAI json mode only supports strings.
   // Right now all of your types need to be strings.
   // And you need to convert them to the correct type before using them.
@@ -20,7 +23,12 @@ export const TodoItemCard: React.FC<TodoItemCardProps> = ({
         isDoneBoolean ? "bg-green-100" : "bg-white"
       } shadow-sm`}
     >
-      <input type="checkbox" checked={isDoneBoolean} className="mr-4" />
+      <input
+        type="checkbox"
+        checked={isDoneBoolean}
+        onChange={(e) => setIsDoneBoolean(e.target.checked)}
+        className="mr-4"
+      />
       <div>
         <h2
           className={`text-lg font-semibold ${

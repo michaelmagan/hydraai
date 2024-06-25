@@ -1,19 +1,17 @@
-import React, { ComponentType, ReactElement } from "react";
 import AIService from "./ai-service";
-import { ComponentMetadata } from "./model/component-metadata";
-import { ComponentPropsMetadata } from "./model/component-props-metadata";
+import ComponentRegistry from "./component-registry";
 import { InputContext } from "./model/input-context";
-
-interface ComponentRegistry {
-  [key: string]: ComponentMetadata;
-}
+import { ComponentType } from "react";
+import { ComponentPropsMetadata } from "./model/component-props-metadata";
+import { ComponentMetadata } from "./model/component-metadata";
 
 export default class Hydra {
-  private componentList: ComponentRegistry = {};
   private aiService: AIService;
+  private componentRegistry: typeof ComponentRegistry;
 
-  constructor(openAIKey: string) {
+  constructor(openAIKey: string, componentRegistry: typeof ComponentRegistry) {
     this.aiService = new AIService(openAIKey);
+    this.componentRegistry = componentRegistry;
   }
 
   public registerComponent(
@@ -21,8 +19,11 @@ export default class Hydra {
     component: ComponentType<any>,
     propsDefinition?: ComponentPropsMetadata
   ): void {
-    if (!this.componentList[name]) {
-      this.componentList[name] = { component, props: propsDefinition || {} };
+    if (!this.componentRegistry.get(name)) {
+      this.componentRegistry.register(name, {
+        component,
+        props: propsDefinition || {},
+      });
     } else {
       throw new Error(
         `A component with name: ${name} is already registered. Try another name.`
@@ -30,37 +31,44 @@ export default class Hydra {
     }
   }
 
-  public async handleMessage(
-    message: string
-  ): Promise<{
+  public async handleMessage(message: string): Promise<{
     componentName: string;
     explanation: string;
-    hydratedComponent: ReactElement;
+    component: ComponentType<any>;
+    props: any;
   }> {
     const context: InputContext = {
       chatMessage: message,
-      availableComponents: Object.keys(this.componentList).map((name) => ({
-        componentName: name,
-        props: this.componentList[name].props,
-      })),
+      availableComponents: Object.entries(this.componentRegistry.getAll()).map(
+        ([name, metadata]) => ({
+          componentName: name,
+          props: (metadata as ComponentMetadata).props,
+        })
+      ),
     };
     const componentChoice = await this.aiService.chooseComponent(context);
     const hydratedComponent = await this.hydrateComponent(
       componentChoice.componentName,
       message
     );
+    const componentMetadata = this.componentRegistry.get(
+      componentChoice.componentName
+    );
+    if (!componentMetadata) {
+      throw new Error(
+        `Component ${componentChoice.componentName} not found in registry`
+      );
+    }
     return {
       componentName: componentChoice.componentName,
       explanation: componentChoice.explanation,
-      hydratedComponent: hydratedComponent,
+      component: componentMetadata.component,
+      props: hydratedComponent,
     };
   }
 
-  async hydrateComponent(
-    componentName: string,
-    message: string
-  ): Promise<ReactElement> {
-    const componentEntry = this.componentList[componentName];
+  async hydrateComponent(componentName: string, message: string): Promise<any> {
+    const componentEntry = this.componentRegistry.get(componentName);
 
     if (!componentEntry) {
       throw new Error(
@@ -70,14 +78,16 @@ export default class Hydra {
 
     const context: InputContext = {
       chatMessage: message,
-      availableComponents: Object.keys(this.componentList).map((name) => ({
-        componentName: name,
-        props: this.componentList[name].props,
-      })),
+      availableComponents: Object.entries(this.componentRegistry.getAll()).map(
+        ([name, metadata]) => ({
+          componentName: name,
+          props: (metadata as ComponentMetadata).props,
+        })
+      ),
     };
 
     const props = await this.aiService.hydrateComponent(context, componentName);
 
-    return React.createElement(componentEntry.component, props);
+    return props;
   }
 }

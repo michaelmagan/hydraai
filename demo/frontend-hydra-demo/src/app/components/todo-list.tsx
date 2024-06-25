@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { TodoListProps } from "../model/todo-item";
 import { TodoItemCard } from "./todo-item-card";

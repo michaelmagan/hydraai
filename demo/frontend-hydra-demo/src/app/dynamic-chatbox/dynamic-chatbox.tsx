@@ -2,6 +2,10 @@ import { useState } from "react";
 import { DynamicMessage } from "../model/dynamic-message";
 import { generateDynamicMessage } from "../services/component-gen.service";
 import DynamicMessageHistory from "./dynamic-message-history";
+import registerComponents from "../services/register-components";
+import { ClientHydra } from "hydra-ai-test";
+
+const clientHydra = new ClientHydra(registerComponents);
 
 export default function DynamicChatbox() {
   const [inputMessage, setInputMessage] = useState("");
@@ -27,7 +31,9 @@ export default function DynamicChatbox() {
       who: "HydraAI",
       type: "component",
       message: response.explanation,
-      component: response.hydratedComponent,
+      component:
+        clientHydra.returnComponent(response.componentName, response.props) ||
+        undefined,
     };
     setMessageHistory((prevHistory) => [...prevHistory, hydraMessage]);
   };
