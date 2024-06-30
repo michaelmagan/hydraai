@@ -1,10 +1,10 @@
-# Hydra-AI Weather App Demo
+# Hydra-AI Todo App Demo
 
-In this demo app, we showcase how the `hydra-ai` package can be used to create a weather application where the AI chooses between different pre-built React components and hydrates them to display weather information dynamically within a chatbox.
+In this demo NextJS app, we showcase how the `hydra-ai` package can be used to create a Todo application where the AI chooses between different pre-built React components and hydrates them dynamically within a chatbox.
 
 After each User message hydra will try to respond with one of the registered components.
 
-The app uses several components that can be found under `/src/app/components` to display information in a way that makes sense based on the content.
+The app uses several components that can be found under `/src/app/components` to display information in a way that makes sense based on the context.
 
 ## Usage
 
@@ -33,52 +33,33 @@ OPENAI_API_KEY=<your key>
 
 ## About
 
-This app is a NextJS where the package is used from within server actions, and resulting components are sent to the frontend to be displayed in the chatbox.
-
-Under `src/app/services/hydra.ts` we register the components:
+Under `src/app/hydra-client.ts` we initialize Hydra and register the components we want Hydra to know about:
 
 ```jsx
-const hydra = new Hydra(openAIKey);
+const hydra = new HydraClient();
 
-hydra.registerComponent("CurrentWeather", CurrentWeather, {
-  temperatureFahrenheit: "number",
-  description: "string",
-  weather: '"rain" | "sun" | "cloud" | "snow" | "clear"',
+hydra.registerComponent("TodoItem", TodoItemCard, {
+  item: "{id: string; title: string; isDone: boolean}",
 });
 
-hydra.registerComponent("RainChart", RainChart, {
-  data: "Array<{ hourOrDay: string; rainChancePercent: number }>",
+hydra.registerComponent("TodoList", TodoList, {
+  todoItems: "{id: string; title: string; isDone: boolean}[]",
 });
 
-hydra.registerComponent("WeatherTimeChart", WeatherTimeChart, {
-  data: 'Array<{ hourOrDay: string; temperature: number; condition: "rain" | "sun" | "cloud" | "snow" | "partly-cloudy"}>',
-});
+hydra.registerComponent("AddTodoItemForm", AddTodoItemForm, {});
 
-hydra.registerComponent("WindTimeChart", WindTimeChart, {
-  data: "Array<{ hourOrDay: string; windSpeedMph: number; windDirection: string }>",
-});
-
-return hydra;
+export default hydra;
 ```
 
-and under `src/app/services/component-gen.service.ts` we call hydra to generate components:
+and in the chatbox `src/app/dynamic-chatbox/dynamic-chatbox.tsx` we use Hydra to generate components, passing it any context it should have:
 
 ```jsx
-"use server";
-
-import Hydra from "hydra-ai";
-import { ReactElement } from "react";
-import { initHydra } from "./hydra";
-
-let hydra: Hydra | null;
-
-export const generateDynamicMessage = async (
-  message: string
-): Promise<ReactElement> => {
-  if (!hydra) {
-    hydra = initHydra(process.env.OPENAI_API_KEY ?? "");
-  }
-  const response = await hydra.generateComponent(message);
-  return response;
-};
+const response = await hydra.generateComponent(
+  `my list of todo items is ${JSON.stringify(getTodoItems())}, 
+       and previous messages are ${JSON.stringify(
+         messageHistory
+       )} latest message: ${message}`
+);
 ```
+
+Behind the scenes, the `hydra-ai` package sets up a NextJS server action that HydraClient calls so that interaction with AI happens server-side.
