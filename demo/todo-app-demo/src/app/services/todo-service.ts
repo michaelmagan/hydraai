@@ -1,4 +1,4 @@
-//A file where you might usually make requests to update TodoItems on the backend
+//A file where you might make requests to update TodoItems on the backend in a real app
 
 import { TodoItem } from "../model/todo-item";
 

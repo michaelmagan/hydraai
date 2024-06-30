@@ -3,7 +3,11 @@ import { v4 as uuidv4 } from "uuid";
 import { TodoItem } from "../model/todo-item";
 import { sampletodoItems, updateTodoItems } from "../services/todo-service";
 
-export default function AddTodoItemForm() {
+interface AddTodoItemFormProps {
+  onAdd?: (item: TodoItem) => void;
+}
+
+export default function AddTodoItemForm({ onAdd }: AddTodoItemFormProps) {
   const [title, setTitle] = useState("");
   const [complete, setComplete] = useState(false);
 
@@ -16,7 +20,7 @@ export default function AddTodoItemForm() {
     };
     setTitle("");
     setComplete(true);
-    updateTodoItems([...sampletodoItems, newItem]);
+    onAdd ? onAdd(newItem) : updateTodoItems([...sampletodoItems, newItem]);
   };
 
   return (
