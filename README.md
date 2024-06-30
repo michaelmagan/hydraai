@@ -8,7 +8,7 @@ const dynamicComponent = await hydra.generateComponent(context);
 
 ### Note:
 
-Hydra is still in-progress, and patterns for different types of components and apps are still being developed.
+Hydra development is still early, and patterns for different types of components and apps are still being developed.
 
 ## This Repo
 
