@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { TodoItem, updateSampletodoItems } from "../model/todo-item";
+import { TodoItem } from "../model/todo-item";
+import { updateTodoItems } from "../services/todo-service";
 import { TodoItemCard } from "./todo-item";
 
 export interface TodoListProps {
@@ -17,7 +18,7 @@ export default function TodoList({ todoItems }: TodoListProps) {
       return item;
     });
     setItems(updatedItems);
-    updateSampletodoItems(updatedItems);
+    updateTodoItems(updatedItems);
   };
 
   return (

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import hydra from "../hydra-client";
 import { DynamicMessage } from "../model/dynamic-message";
-import { sampletodoItems } from "../model/todo-item";
+import { getTodoItems } from "../services/todo-service";
 import DynamicMessageHistory from "./dynamic-message-history";
 import { Info } from "./info";
 
@@ -35,7 +35,7 @@ export default function DynamicChatbox() {
   const processUserMessage = async (message: string) => {
     setIsLoading(true);
     const response = await hydra.generateComponent(
-      `my list of todo items is ${JSON.stringify(sampletodoItems)}, 
+      `my list of todo items is ${JSON.stringify(getTodoItems())}, 
        and previous messages are ${JSON.stringify(
          messageHistory
        )} latest message: ${message}`
