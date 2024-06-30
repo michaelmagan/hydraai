@@ -3,7 +3,6 @@
 import HydraBackend from "./hydra-ai-backend";
 import { ComponentChoice } from "./model/component-choice";
 
-console.log("Hydra server action loading");
 let hydra: HydraBackend | null;
 
 export default async function chooseComponent(

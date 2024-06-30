@@ -24,5 +24,4 @@ export default class HydraBackend {
   }
 }
 
-console.log("Hydra backend loading");
 export const hydraBackend = new HydraBackend(process.env.OPENAI_API_KEY!);

@@ -16,7 +16,6 @@ export default class HydraClient {
     component: ComponentType<any>,
     propsDefinition?: ComponentPropsMetadata
   ): void {
-    console.log(`Registering component: ${name}`);
     if (!this.componentList[name]) {
       this.componentList[name] = { component, props: propsDefinition || {} };
     } else {
@@ -33,12 +32,11 @@ export default class HydraClient {
       availableComponents: { componentName: string; props: any }[]
     ) => Promise<ComponentChoice> = chooseComponent
   ): Promise<ReactElement> {
-    console.log(`Generating component`);
     const availableComponents = Object.keys(this.componentList).map((name) => ({
       componentName: name,
       props: this.componentList[name].props,
     }));
-    const response = await chooseComponent(message, availableComponents);
+    const response = await callback(message, availableComponents);
     if (!response) {
       throw new Error("Failed to fetch component choice from backend");
     }
@@ -49,7 +47,6 @@ export default class HydraClient {
         `Hydra tried to use Component ${response.componentName}, but it was not found.`
       );
     }
-    console.log(`Creating component: ${response.componentName}`);
 
     return React.createElement(componentEntry.component, response.props);
   }
