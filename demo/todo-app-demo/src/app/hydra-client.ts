@@ -1,4 +1,5 @@
 import { HydraClient } from "hydra-ai";
+import AddTodoItemForm from "./components/add-todo-form";
 import { TodoItemCard } from "./components/todo-item";
 import TodoList from "./components/todo-list";
 
@@ -11,5 +12,7 @@ hydra.registerComponent("TodoItem", TodoItemCard, {
 hydra.registerComponent("TodoList", TodoList, {
   todoItems: "{id: string; title: string; isDone: boolean}[]",
 });
+
+hydra.registerComponent("AddTodoItemForm", AddTodoItemForm, {});
 
 export default hydra;
