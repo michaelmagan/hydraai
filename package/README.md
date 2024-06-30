@@ -84,7 +84,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchComponent("please show me ");
+    fetchComponent("please show me a weather forecast");
   }, []);
 
   return (
@@ -94,3 +94,7 @@ export default function Home() {
   );
 }
 ```
+
+## Report a bug or Request a feature
+
+Make a GitHub issue [here.](https://github.com/michaelmagan/hydraai/issues/new)

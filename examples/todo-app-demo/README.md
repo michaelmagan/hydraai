@@ -63,3 +63,7 @@ const response = await hydra.generateComponent(
 ```
 
 Behind the scenes, the `hydra-ai` package sets up a NextJS server action that HydraClient calls so that interaction with AI happens server-side.
+
+## Report a bug or Request a feature
+
+Make a GitHub issue [here.](https://github.com/michaelmagan/hydraai/issues/new)
