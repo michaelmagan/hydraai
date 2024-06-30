@@ -7,8 +7,9 @@ import { Info } from "./info";
 
 const initialMessages: DynamicMessage[] = [
   {
-    who: "HydraAI",
-    message: "Hello!",
+    who: "HydraAI ToDo Demo",
+    message:
+      "Hello! Try sending something like 'show me my todo list' or 'show me items not done'",
     type: "text",
   },
 ];
