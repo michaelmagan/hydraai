@@ -41,7 +41,7 @@ To run one of the example apps, follow the instructions in that example's readme
 
 ## How is this different from Vercel V0?
 
-We've been this a few times. For clarification, Vercel V0 lets you generate a component that you can copy/paste into your app's code. Hydra is for injecting components into your running app's UI on-the-fly based on context.
+We've been asked this a few times. For clarification, Vercel V0 lets you generate a component that you can copy/paste into your app's code. Hydra is for injecting components into your running app's UI on-the-fly based on context.
 
 ## Report a bug or Request a feature
 
