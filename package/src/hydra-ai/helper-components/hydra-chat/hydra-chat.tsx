@@ -9,6 +9,7 @@ interface HydraChatProps {
   initialMessages: HydraChatMessage[];
   aiName?: string;
   inputBackgroundColor?: string;
+  inputTextColor?: string;
 }
 
 export default function HydraChat({
@@ -16,6 +17,7 @@ export default function HydraChat({
   initialMessages,
   aiName = "Hydra",
   inputBackgroundColor = "#111827",
+  inputTextColor = "",
 }: HydraChatProps) {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +61,7 @@ export default function HydraChat({
   };
 
   return (
-    <div className="relative flex flex-col bg-black text-white p-4 h-full w-full">
+    <div className="relative flex flex-col p-4 h-full w-full">
       <div className="flex-grow overflow-auto mb-20">
         <HydraMessageHistory messages={messageHistory} />
         {isLoading && <div className="text-center">Loading...</div>}
@@ -71,7 +73,8 @@ export default function HydraChat({
         <input
           type="text"
           placeholder="message hydraai..."
-          className="flex-grow bg-transparent text-white placeholder-gray-500 outline-none"
+          className="flex-grow bg-transparent placeholder-gray-500 outline-none"
+          style={{ color: inputTextColor }}
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           value={inputMessage}
