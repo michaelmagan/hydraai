@@ -8,12 +8,14 @@ interface HydraChatProps {
   hydraClient: HydraClient;
   initialMessages: HydraChatMessage[];
   aiName?: string;
+  inputBackgroundColor?: string;
 }
 
 export default function HydraChat({
   hydraClient: hydra,
   initialMessages,
   aiName = "Hydra",
+  inputBackgroundColor = "#111827",
 }: HydraChatProps) {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -62,7 +64,10 @@ export default function HydraChat({
         <HydraMessageHistory messages={messageHistory} />
         {isLoading && <div className="text-center">Loading...</div>}
       </div>
-      <div className="flex items-center bg-gray-900 rounded-lg p-2 fixed bottom-4 left-0 right-0 w-full max-w-[500px] mx-auto">
+      <div
+        className={`flex items-center rounded-lg p-2 m-2 absolute bottom-4 left-0 right-0 w-full max-w-full mx-auto`}
+        style={{ backgroundColor: inputBackgroundColor }}
+      >
         <input
           type="text"
           placeholder="message hydraai..."
@@ -73,7 +78,7 @@ export default function HydraChat({
         />
         <div className="flex ml-2">
           <SendIcon
-            className="w-6 h-6 cursor-pointer button"
+            className="w-3 h-3 cursor-pointer button"
             onClick={() => {
               handleSendMessage(inputMessage);
               setInputMessage("");
