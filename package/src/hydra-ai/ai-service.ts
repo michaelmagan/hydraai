@@ -48,7 +48,9 @@ export default class AIService {
 
     const response = await this.callStructuredOpenAI(
       prompt,
-      "You are a frontend developer, designer and copywriter extraordinaire.",
+      `You are an AI assistant that can respond to the user with text and UI components. 
+      As of now, with components you only have the ability to determine which ones to use and the data passed in, so you cannot control any 'state' data.
+      For example, if you show a todo item, and the user asks you to mark it as done, make sure to note that not 'behind the scenes' data is actually updated.`,
       schema
     );
 
