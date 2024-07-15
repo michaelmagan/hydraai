@@ -17,10 +17,10 @@ export default function HydraMessageHistory({
   }, [messages]);
 
   return (
-    <div className="flex flex-col p-4 mb-16">
+    <div className="flex flex-col p-4">
       <div className="flex-grow overflow-y-auto">
         {messages.map((message, index) => (
-          <div key={index} className="mb-6">
+          <div key={index} className="mb-2">
             <p className="whitespace-pre-line text-lg">
               <strong>{message.sender}:</strong>
             </p>

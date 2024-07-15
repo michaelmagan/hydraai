@@ -3,6 +3,7 @@ import HydraClient from "../../hydra-ai-client";
 import HydraChatMessage from "./hydra-chat-message";
 import HydraMessageHistory from "./hydra-message-history";
 import SendIcon from "./send-icon";
+import SpokeSpinner from "./spoke-spinner";
 
 interface HydraChatProps {
   hydraClient: HydraClient;
@@ -64,7 +65,11 @@ export default function HydraChat({
     <div className="relative flex flex-col p-4 h-full w-full">
       <div className="flex-grow overflow-auto mb-20">
         <HydraMessageHistory messages={messageHistory} />
-        {isLoading && <div className="text-center">Loading...</div>}
+        {isLoading && (
+          <div className="text-center">
+            <SpokeSpinner />
+          </div>
+        )}
       </div>
       <div
         className={`flex items-center rounded-lg p-2 m-2 absolute bottom-4 left-0 right-0 w-full max-w-full mx-auto`}
