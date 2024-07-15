@@ -26,6 +26,11 @@ export default class AIService {
         .describe(
           "The props that should be used in the chosen component. These will be injected by using React.createElement(component, props)"
         ),
+      message: z
+        .string()
+        .describe(
+          "The message to be displayed to the user alongside the chosen component."
+        ),
     });
 
     // ToDo: We will need to chain these as two steps because otherwise the prompt needs to
@@ -47,7 +52,11 @@ export default class AIService {
       schema
     );
 
-    return response as ComponentChoice;
+    return {
+      componentName: response.componentName,
+      props: response.props,
+      message: response.message,
+    };
   };
 
   async callStructuredOpenAI(
