@@ -1,6 +1,6 @@
-# Hydra-AI Todo App Demo
+# Hydra-AI Social App Demo
 
-In this demo NextJS app, we showcase how the `hydra-ai` package can be used to create a Todo application where the AI chooses between different pre-built React components and hydrates them dynamically within a chatbox.
+In this demo NextJS app, we showcase how the `hydra-ai` package can be used to create a social application where the AI chooses between different pre-built React components and hydrates them dynamically within a chatbox.
 
 After each User message hydra will try to respond with one of the registered components.
 
@@ -38,28 +38,48 @@ Under `src/app/hydra-client.ts` we initialize Hydra and register the components 
 ```jsx
 const hydra = new HydraClient();
 
-hydra.registerComponent("TodoItem", TodoItemCard, {
-  item: "{id: string; title: string; isDone: boolean}",
+hydra.registerComponent(
+  "ProfileCardList",
+  ProfileCardList,
+  {
+    profiles: "{id: string, name: string, imageUrl: string, about: string}[]",
+  },
+  getProfiles
+);
+
+hydra.registerComponent("SendMessageList", SendMessageList, {
+  messages: "{id: string, to: string, message: string}[]",
 });
 
-hydra.registerComponent("TodoList", TodoList, {
-  todoItems: "{id: string; title: string; isDone: boolean}[]",
-});
-
-hydra.registerComponent("AddTodoItemForm", AddTodoItemForm, {});
+hydra.registerComponent(
+  "DiscussionList",
+  DiscussionList,
+  {
+    discussions:
+      "{id: string, title: string, description: string, createdDateIso: string, messages: {id: string, discussionId: string, from: string, message: string, createdDateIso: string}[]}[]",
+  },
+  getDiscussions
+);
 
 export default hydra;
 ```
 
-and in the chatbox `src/app/dynamic-chatbox/dynamic-chatbox.tsx` we use Hydra to generate components, passing it any context it should have:
+To handle interaction with Hydra and showing the resulting components, we use the `<HydraChat/>` component from the `hydra-ai` package.
 
 ```jsx
-const response = await hydra.generateComponent(
-  `my list of todo items is ${JSON.stringify(getTodoItems())}, 
-       and previous messages are ${JSON.stringify(
-         messageHistory
-       )} latest message: ${message}`
-);
+<HydraChat
+  hydraClient={hydra}
+  initialMessages={[
+    {
+      sender: "Hydra",
+      message: `This is a demo social app made using Hydra. Try 'Show me people who use NextJS' or 'Draft a message to any react developers asking them to try out Hydra' 
+                or 'Show me discussions about React'`,
+      type: "text",
+    },
+  ]}
+  inputBackgroundColor="white"
+  inputTextColor="black"
+/>
 ```
 
 Behind the scenes, the `hydra-ai` package sets up a NextJS server action that HydraClient calls so that interaction with AI happens server-side.
