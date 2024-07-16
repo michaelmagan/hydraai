@@ -2,6 +2,7 @@
 
 import { HydraChat } from "hydra-ai";
 import hydra from "./hydra-client";
+import { Title } from "./title";
 
 export default function Home() {
   return (
@@ -9,7 +10,7 @@ export default function Home() {
       className="flex flex-col h-screen  text-black p-4 justify-center items-center"
       style={{ backgroundColor: "#AAB7B5" }}
     >
-      <div className="p-3">Mage - a Hydra demo</div>
+      <Title />
       <div
         className="flex-grow overflow-y-auto  text-xs w-full max-w-xl text-black rounded-lg shadow-lg"
         style={{ backgroundColor: "#F0F0F0" }}
