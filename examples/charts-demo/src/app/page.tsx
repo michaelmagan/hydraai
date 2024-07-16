@@ -7,16 +7,10 @@ import hydra from "./hydra-client";
 export default function Home() {
   return (
     <div
-      className="flex flex-col h-screen  text-black p-4 justify-center items-center"
+      className="flex flex-row h-[100dvh] text-black p-4 justify-center items-center"
       style={{ backgroundColor: "#162E3B" }}
     >
-      <div className="flex-grow overflow-y-auto  text-sm w-full max-w-xl text-[#B5D3BF] rounded-lg ">
-        <HydraPieChart
-          data={[
-            { name: "A", value: 400 },
-            { name: "b", value: 200 },
-          ]}
-        />
+      <div className="h-full flex-grow overflow-y-auto  text-sm w-full max-w-xl text-[#B5D3BF] rounded-lg p-4 ">
         <HydraChat
           hydraClient={hydra}
           initialMessages={[
@@ -30,6 +24,12 @@ export default function Home() {
           inputTextColor="black"
         />
       </div>
+      <HydraPieChart
+        data={[
+          { name: "A", value: 400 },
+          { name: "b", value: 200 },
+        ]}
+      />
     </div>
   );
 }
