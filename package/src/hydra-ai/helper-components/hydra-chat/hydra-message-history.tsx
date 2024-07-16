@@ -21,10 +21,21 @@ export default function HydraMessageHistory({
       <div className="flex-grow overflow-y-auto">
         {messages.map((message, index) => (
           <div key={index} className="mb-2">
-            <p className="whitespace-pre-line text-lg">
-              <strong>{message.sender}:</strong>
-            </p>
-            <p className="whitespace-pre-line">{message.message}</p>
+            <div className=" flex flex-row items-start">
+              <div
+                style={{
+                  height: 25,
+                  width: 25,
+                  minWidth: 25,
+                  minHeight: 25,
+                  borderRadius: 5,
+                  backgroundColor:
+                    message.sender == "Input" ? "#B7E1FF" : "black",
+                  marginRight: 5,
+                }}
+              ></div>
+              <div>{message.message}</div>
+            </div>
             {message.type === "component" && message.component}
           </div>
         ))}

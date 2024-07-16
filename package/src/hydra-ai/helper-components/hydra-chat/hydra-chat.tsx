@@ -4,6 +4,7 @@ import HydraChatMessage from "./hydra-chat-message";
 import HydraMessageHistory from "./hydra-message-history";
 import SendIcon from "./send-icon";
 import SpokeSpinner from "./spoke-spinner";
+import "./styles.css";
 
 interface HydraChatProps {
   hydraClient: HydraClient;
