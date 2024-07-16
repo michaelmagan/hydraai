@@ -20,7 +20,7 @@ export default function HydraMessageHistory({
     <div className="flex flex-col p-4">
       <div className="flex-grow overflow-y-auto">
         {messages.map((message, index) => (
-          <div key={index} className="mb-2">
+          <div key={index} className="mb-4">
             <div className=" flex flex-row items-start">
               <div
                 style={{

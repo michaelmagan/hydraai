@@ -73,7 +73,7 @@ export default function HydraChat({
         )}
       </div>
       <div
-        className={`flex items-center rounded-lg p-2 m-2 absolute bottom-4 left-0 right-0 w-full max-w-full mx-auto`}
+        className={`flex items-center rounded-lg p-2 m-2 bottom-4 left-0 right-0 w-full max-w-full mx-auto`}
         style={{ backgroundColor: inputBackgroundColor }}
       >
         <input
