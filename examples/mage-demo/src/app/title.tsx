@@ -19,6 +19,10 @@ export const Title = () => {
       <div className="text-xs">
         note: this demo uses fake profiles and discussions
       </div>
+      <div className="text-xs">
+        see <Link href={"/all-components"}>/all-components</Link> for a list of
+        all components Hydra knows about
+      </div>
     </div>
   );
 };
