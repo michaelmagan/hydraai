@@ -6,9 +6,10 @@ import hydra from "./hydra-client";
 export default function Home() {
   return (
     <div
-      className="flex flex-col h-screen  text-white p-4 justify-center items-center"
+      className="flex flex-col h-screen  text-black p-4 justify-center items-center"
       style={{ backgroundColor: "#AAB7B5" }}
     >
+      <div className="p-3">Mage - a Hydra demo</div>
       <div
         className="flex-grow overflow-y-auto  text-xs w-full max-w-xl text-black rounded-lg shadow-lg"
         style={{ backgroundColor: "#F0F0F0" }}
@@ -18,8 +19,8 @@ export default function Home() {
           initialMessages={[
             {
               sender: "Hydra",
-              message:
-                "Hello! I'm Hydra, your personal assistant. How can I help you today?",
+              message: `This is a demo social app made using Hydra. Try 'Show me people who use NextJS' or 'Draft a message to any react developers asking them to try out Hydra' 
+                or 'Show me discussions about React'`,
               type: "text",
             },
           ]}
