@@ -16,7 +16,7 @@ export const ProfileCardList = ({ profiles }: ProfileCardListProps) => {
         >
           <div className="h-[60%] w-full bg-[#B5D3BF] rounded-lg flex justify-center items-center">
             <img
-              src={"/vangogh.png"}
+              src={profile.imageUrl}
               alt={profile.name}
               className="rounded-full h-[60px] w-[60px]"
             />
