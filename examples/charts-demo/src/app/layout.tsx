@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Orelega_One } from "next/font/google";
+import { Inter, Nanum_Myeongjo, Orelega_One } from "next/font/google";
 import "./globals.css";
 
 const orelega_One = Orelega_One({ weight: "400", subsets: ["latin"] });
+
+const nanum_Myeongjo = Nanum_Myeongjo({ weight: "400", subsets: ["latin"] });
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={orelega_One.className}>{children}</body>
+      <body className={nanum_Myeongjo.className}>{children}</body>
     </html>
   );
 }
