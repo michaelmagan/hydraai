@@ -22,11 +22,12 @@ export const SendMessage = ({ message }: SendMessageProps) => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center w-full p-4">
+    <div className="flex flex-col items-center justify-center w-full p-4">
+      <div className="w-full justify-start">message to {message.to}</div>
       {isSent ? (
         <div className="">Sent!</div>
       ) : (
-        <>
+        <div className="flex flex-row w-full">
           <input
             type="text"
             className="w-full p-2 rounded-lg shadow-lg"
@@ -36,13 +37,13 @@ export const SendMessage = ({ message }: SendMessageProps) => {
             disabled={isSending}
           />
           <button
-            className="ml-4 bg-blue-500 text-white p-2 rounded-lg shadow-lg"
+            className="ml-4 bg-blue-500 text-white p-2 m-2 rounded-lg shadow-lg"
             onClick={handleSendMessage}
             disabled={isSending}
           >
             {isSending ? "Sending..." : "Send"}
           </button>
-        </>
+        </div>
       )}
     </div>
   );

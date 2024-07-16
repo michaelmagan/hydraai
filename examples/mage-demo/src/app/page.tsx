@@ -10,7 +10,7 @@ export default function Home() {
       style={{ backgroundColor: "#AAB7B5" }}
     >
       <div
-        className="flex-grow overflow-y-auto  text-sm w-full max-w-xl text-black rounded-lg shadow-lg"
+        className="flex-grow overflow-y-auto  text-xs w-full max-w-xl text-black rounded-lg shadow-lg"
         style={{ backgroundColor: "#F0F0F0" }}
       >
         <HydraChat
