@@ -18,7 +18,7 @@ export const SendMessage = ({ message }: SendMessageProps) => {
     setTimeout(() => {
       setIsSending(false);
       setIsSent(true);
-    }, 1000); // Simulate delay for sending message
+    }, 500); // Simulate delay for sending message
   };
 
   return (
