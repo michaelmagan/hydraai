@@ -6,13 +6,22 @@ interface ProfileCardListProps {
 
 export const ProfileCardList = ({ profiles }: ProfileCardListProps) => {
   return (
-    <div>
+    <div className=" flex flex-row overflow-auto">
       {profiles.map((profile) => (
-        <div key={profile.id}>
-          <img src={profile.imageUrl} alt={profile.name} />
-          <h2>{profile.name}</h2>
+        <div
+          key={profile.id}
+          className={
+            "w-60 h-60 min-w-[200px] flex flex-col items-center m-4 bg-white rounded-lg shadow-lg"
+          }
+        >
+          <div className="h-[60%] w-full bg-[#B5D3BF] rounded-lg">
+            {/* <img src={profile.imageUrl} alt={profile.name} /> */}
+          </div>
+          <div className="p-4 text-center">
+            <h2>{profile.name}</h2>
 
-          <p>{profile.about}</p>
+            <p className="text-xs p-2">{profile.about}</p>
+          </div>
         </div>
       ))}
     </div>
