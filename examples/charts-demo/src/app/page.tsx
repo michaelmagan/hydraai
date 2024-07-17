@@ -1,6 +1,6 @@
 "use client";
 
-import { HydraChat } from "hydra-ai-backup";
+import { HydraChat } from "hydra-ai";
 import React from "react";
 import hydra from "./hydra-client";
 import { Title } from "./title";
@@ -37,6 +37,7 @@ export default function Home() {
             aiMessageColor="#B5D3BF"
             userMessageColor="white"
             handleComponent={handleHydraComponent}
+            loadingIconColor="white"
           />
         </div>
 

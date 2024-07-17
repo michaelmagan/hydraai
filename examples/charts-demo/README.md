@@ -78,6 +78,7 @@ To handle interaction with Hydra and showing the resulting components, we use th
   aiMessageColor="#B5D3BF"
   userMessageColor="white"
   handleComponent={handleHydraComponent}
+  loadingIconColor="white"
 />
 ```
 

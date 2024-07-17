@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Nanum_Myeongjo, Orelega_One } from "next/font/google";
+import { Nanum_Myeongjo } from "next/font/google";
 import "./globals.css";
 
-const orelega_One = Orelega_One({ weight: "400", subsets: ["latin"] });
-
 const nanum_Myeongjo = Nanum_Myeongjo({ weight: "400", subsets: ["latin"] });
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,
