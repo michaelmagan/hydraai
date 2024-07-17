@@ -1,6 +1,10 @@
 import React from "react";
 
-export default function SpokeSpinner() {
+interface SpokeSpinnerProps {
+  color?: string;
+}
+
+export default function SpokeSpinner({ color = "" }: SpokeSpinnerProps) {
   return (
     <div className="w-4 h-4">
       <svg
@@ -9,6 +13,7 @@ export default function SpokeSpinner() {
         viewBox="0 0 24 24"
         strokeLinecap="round"
         strokeLinejoin="round"
+        color={color}
         xmlns="http://www.w3.org/2000/svg"
         className="size-5 animate-spin stroke-zinc-700"
       >

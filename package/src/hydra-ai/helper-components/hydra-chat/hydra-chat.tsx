@@ -10,16 +10,24 @@ interface HydraChatProps {
   hydraClient: HydraClient;
   initialMessages: HydraChatMessage[];
   aiName?: string;
+  aiMessageColor?: string;
+  userMessageColor?: string;
   inputBackgroundColor?: string;
   inputTextColor?: string;
+  inputPlaceholder?: string;
+  handleComponent?: (component: React.ReactElement) => any;
 }
 
 export default function HydraChat({
   hydraClient: hydra,
   initialMessages,
   aiName = "Hydra",
+  aiMessageColor = "",
+  userMessageColor = "",
   inputBackgroundColor = "#111827",
   inputTextColor = "",
+  inputPlaceholder = "message hydraai",
+  handleComponent,
 }: HydraChatProps) {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +53,11 @@ export default function HydraChat({
         messageHistory
       )} latest message: ${message}`
     );
+
+    if (response.component && handleComponent) {
+      handleComponent(response.component);
+    }
+
     const hydraMessage: HydraChatMessage = {
       component: response.component,
       sender: aiName,
@@ -65,7 +78,12 @@ export default function HydraChat({
   return (
     <div className="relative flex flex-col p-4 h-full w-full">
       <div className="flex-grow overflow-auto mb-20">
-        <HydraMessageHistory messages={messageHistory} />
+        <HydraMessageHistory
+          messages={messageHistory}
+          hideComponent={handleComponent ? true : false}
+          aiMessageColor={aiMessageColor}
+          userMessageColor={userMessageColor}
+        />
         {isLoading && (
           <div className="text-center">
             <SpokeSpinner />
@@ -78,7 +96,7 @@ export default function HydraChat({
       >
         <input
           type="text"
-          placeholder="message hydraai..."
+          placeholder={inputPlaceholder}
           className="flex-grow bg-transparent placeholder-gray-500 outline-none"
           style={{ color: inputTextColor }}
           onChange={(e) => setInputMessage(e.target.value)}
