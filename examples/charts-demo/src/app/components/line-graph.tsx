@@ -15,7 +15,6 @@ export interface HydraLineGraphProps {
 }
 
 const HydraLineGraph: React.FC<HydraLineGraphProps> = ({ xValues, series }) => {
-  console.log("um");
   const baseColor = "#2563eb";
   const numEntries = series.length;
   const increment = 50 / Math.max(numEntries - 1, 1);
@@ -52,13 +51,10 @@ const HydraLineGraph: React.FC<HydraLineGraphProps> = ({ xValues, series }) => {
 
   const data = convertSeriesToLineChartData(xValues, series);
 
-  console.log("in");
-  console.log(data);
-
   return (
     <LineChart
-      width={450}
-      height={350}
+      width={350}
+      height={250}
       data={data}
       className="bg-white rounded-lg shadow-lg p-4"
     >
