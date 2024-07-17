@@ -1,10 +1,10 @@
-# Hydra-AI Chart Interaction Demo
+# Hydra-AI Charts Demo
 
-In this demo NextJS app, we showcase how the `hydra-ai` package can be used to create a social application where the AI chooses between different pre-built React components and hydrates them dynamically within a chatbox.
+In this demo NextJS app, we showcase how the `hydra-ai` package can be used to create an application where you can chat with an AI about your finances, and the AI can control charts to help visualize them.
 
 After each User message hydra will try to respond with one of the registered components.
 
-The app uses several components that can be found under `/src/app/components` to display information in a way that makes sense based on the context.
+In this demo, hydra can use a PieChart and a LineGraph that can be found under `/src/app/components` to display information in a way that makes sense based on the context.
 
 ## Usage
 
@@ -22,14 +22,15 @@ OPENAI_API_KEY=<your key>
 
 2. **Install dependencies**:
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
 3. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
+
+```bash
+npm run dev
+```
 
 ## About
 
@@ -39,26 +40,22 @@ Under `src/app/hydra-client.ts` we initialize Hydra and register the components 
 const hydra = new HydraClient();
 
 hydra.registerComponent(
-  "ProfileCardList",
-  ProfileCardList,
+  "PieChart",
+  HydraPieChart,
   {
-    profiles: "{id: string, name: string, imageUrl: string, about: string}[]",
+    data: '{ name: "string", value: "number" }[]',
   },
-  getProfiles
+  getTransactions
 );
 
-hydra.registerComponent("SendMessageList", SendMessageList, {
-  messages: "{id: string, to: string, message: string}[]",
-});
-
 hydra.registerComponent(
-  "DiscussionList",
-  DiscussionList,
+  "LineGraph",
+  HydraLineGraph,
   {
-    discussions:
-      "{id: string, title: string, description: string, createdDateIso: string, messages: {id: string, discussionId: string, from: string, message: string, createdDateIso: string}[]}[]",
+    xValues: "string[]",
+    series: "{ name: string; yValues: number[] }[]",
   },
-  getDiscussions
+  getTransactions
 );
 
 export default hydra;
@@ -72,17 +69,34 @@ To handle interaction with Hydra and showing the resulting components, we use th
   initialMessages={[
     {
       sender: "Hydra",
-      message: `This is a demo social app made using Hydra. Try 'Show me people who use NextJS' or 'Draft a message to any react developers asking them to try out Hydra' 
-                or 'Show me discussions about React'`,
+      message: `I am a Hydra-powered AI agent that has access to demo transaction data, with the ability to show charts. Try asking about your monthly spending.`,
       type: "text",
     },
   ]}
-  inputBackgroundColor="white"
-  inputTextColor="black"
+  inputBackgroundColor="#050C0F"
+  inputTextColor="white"
+  aiMessageColor="#B5D3BF"
+  userMessageColor="white"
+  handleComponent={handleHydraComponent}
 />
 ```
 
 Behind the scenes, the `hydra-ai` package sets up a NextJS server action that HydraClient calls so that interaction with AI happens server-side.
+
+Finally, the hydrated component returned from Hydra is used:
+
+```jsx
+  const [hydraComponent, setHydraComponent] =
+    React.useState<React.ReactElement | null>(null);
+
+  const handleHydraComponent = (component: React.ReactElement) => {
+    setHydraComponent(component);
+  };
+
+  ...
+
+  <div>{hydraComponent}</div>
+```
 
 ## Report a bug or Request a feature
 
