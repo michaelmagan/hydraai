@@ -1,3 +1,4 @@
+"use client";
 import {
   CartesianGrid,
   Legend,
@@ -14,9 +15,10 @@ export interface HydraLineGraphProps {
 }
 
 const HydraLineGraph: React.FC<HydraLineGraphProps> = ({ xValues, series }) => {
+  console.log("um");
   const baseColor = "#2563eb";
   const numEntries = series.length;
-  const increment = 50 / (numEntries - 1);
+  const increment = 50 / Math.max(numEntries - 1, 1);
 
   const lightenColor = (color: string, percent: number) => {
     const num = parseInt(color.slice(1), 16);
@@ -49,6 +51,9 @@ const HydraLineGraph: React.FC<HydraLineGraphProps> = ({ xValues, series }) => {
   };
 
   const data = convertSeriesToLineChartData(xValues, series);
+
+  console.log("in");
+  console.log(data);
 
   return (
     <LineChart

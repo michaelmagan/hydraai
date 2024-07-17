@@ -1,3 +1,4 @@
+"use client";
 import { Pie, PieChart, Tooltip } from "recharts";
 
 export interface HydraPieChartProps {

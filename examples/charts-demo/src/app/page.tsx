@@ -24,7 +24,7 @@ export default function Home() {
           initialMessages={[
             {
               sender: "Hydra",
-              message: `How can I help you?`,
+              message: `I am a Hydra-powered AI agent that has access to demo transaction data, with the ability to show charts. Try asking about your monthly spending.`,
               type: "text",
             },
           ]}
