@@ -15,10 +15,10 @@ export default function Home() {
 
   return (
     <div
-      className="flex flex-row h-[100dvh] text-black p-4 justify-center items-center"
+      className="flex flex-row flex-wrap-reverse h-[100dvh] text-black p-4 justify-center items-center"
       style={{ backgroundColor: "#162E3B" }}
     >
-      <div className="h-[60%] flex-grow overflow-y-auto  text-sm w-full max-w-xl text-[#B5D3BF] rounded-lg p-4 ">
+      <div className="h-[60%] w-full max-w-xl flex-grow overflow-y-auto text-sm  text-[#B5D3BF] rounded-lg p-2 md:p-4 ">
         <HydraChat
           hydraClient={hydra}
           initialMessages={[
