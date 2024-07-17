@@ -1,7 +1,6 @@
 "use client";
 
 import { HydraChat } from "hydra-ai";
-import HydraPieChart from "./components/pie-chart";
 import hydra from "./hydra-client";
 
 export default function Home() {
@@ -24,12 +23,12 @@ export default function Home() {
           inputTextColor="black"
         />
       </div>
-      <HydraPieChart
+      {/* <HydraPieChart
         data={[
           { name: "A", value: 400 },
           { name: "b", value: 200 },
         ]}
-      />
+      /> */}
     </div>
   );
 }
