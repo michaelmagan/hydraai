@@ -1,4 +1,4 @@
-import { Pie, PieChart } from "recharts";
+import { Pie, PieChart, Tooltip } from "recharts";
 
 export interface HydraPieChartProps {
   data: { name: string; value: number }[];
@@ -52,6 +52,8 @@ export default function HydraPieChart({ data }: HydraPieChartProps) {
         fill={baseColor}
         label
       />
+      <Tooltip />
+      {/* <Legend /> */}
     </PieChart>
   );
 }

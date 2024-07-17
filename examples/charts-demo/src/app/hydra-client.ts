@@ -1,4 +1,4 @@
-import { HydraClient } from "hydra-ai";
+import { HydraClient } from "hydra-ai-backup";
 import HydraPieChart from "./components/pie-chart";
 import { getTransactions } from "./services/transactions-service";
 
