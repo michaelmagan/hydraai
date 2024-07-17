@@ -9,6 +9,7 @@ export default function Home() {
     React.useState<React.ReactElement | null>(null);
 
   const handleHydraComponent = (component: React.ReactElement) => {
+    console.log(component);
     setHydraComponent(component);
   };
 
@@ -34,6 +35,7 @@ export default function Home() {
           handleComponent={handleHydraComponent}
         />
       </div>
+
       <div>{hydraComponent}</div>
     </div>
   );
