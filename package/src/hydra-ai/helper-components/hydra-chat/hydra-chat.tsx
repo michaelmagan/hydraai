@@ -12,9 +12,12 @@ interface HydraChatProps {
   aiName?: string;
   aiMessageColor?: string;
   userMessageColor?: string;
+  aiIconColor?: string;
+  userIconColor?: string;
   inputBackgroundColor?: string;
   inputTextColor?: string;
   inputPlaceholder?: string;
+  loadingIconColor?: string;
   handleComponent?: (component: React.ReactElement) => any;
 }
 
@@ -24,9 +27,12 @@ export default function HydraChat({
   aiName = "Hydra",
   aiMessageColor = "",
   userMessageColor = "",
+  aiIconColor,
+  userIconColor,
   inputBackgroundColor = "#111827",
   inputTextColor = "",
   inputPlaceholder = "message hydraai",
+  loadingIconColor,
   handleComponent,
 }: HydraChatProps) {
   const [inputMessage, setInputMessage] = useState("");
@@ -83,10 +89,12 @@ export default function HydraChat({
           hideComponent={handleComponent ? true : false}
           aiMessageColor={aiMessageColor}
           userMessageColor={userMessageColor}
+          aiIconColor={aiIconColor}
+          userIconColor={userIconColor}
         />
         {isLoading && (
-          <div className="text-center">
-            <SpokeSpinner />
+          <div className="text-center p-4">
+            <SpokeSpinner color={loadingIconColor} />
           </div>
         )}
       </div>

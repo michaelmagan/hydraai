@@ -3,6 +3,8 @@ interface HydraMessageHistoryProps {
   hideComponent?: boolean;
   aiMessageColor?: string;
   userMessageColor?: string;
+  aiIconColor?: string;
+  userIconColor?: string;
 }
 
 import React, { useEffect, useRef } from "react";
@@ -13,6 +15,8 @@ export default function HydraMessageHistory({
   hideComponent = false,
   aiMessageColor = "",
   userMessageColor = "",
+  aiIconColor = "black",
+  userIconColor = "#B7E1FF",
 }: HydraMessageHistoryProps) {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -36,7 +40,7 @@ export default function HydraMessageHistory({
                   minHeight: 25,
                   borderRadius: 5,
                   backgroundColor:
-                    message.sender == "Input" ? "#B7E1FF" : "black",
+                    message.sender == "Input" ? userIconColor : aiIconColor,
                   marginRight: 15,
                 }}
               ></div>
