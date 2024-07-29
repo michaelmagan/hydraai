@@ -1,3 +1,5 @@
+"use client";
+
 import { ComponentRegistry } from "hydra-ai-test";
 
 import { TodoItemCard } from "../components/todo-item-card";

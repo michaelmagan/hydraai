@@ -1,4 +1,4 @@
-import "server-only"; // So this only runs on a server component.
+// import "server-only"; removing just of testing
 
 import { OpenAI } from "openai";
 import { z } from "zod";
