@@ -63,7 +63,7 @@ export default class HydraClient {
 
   public async generateComponent(
     message: string,
-    callback: (
+    getComponentChoice: (
       message: string,
       availableComponents: AvailableComponents
     ) => Promise<ComponentChoice> = chooseComponent,
@@ -77,7 +77,7 @@ export default class HydraClient {
       this.componentList
     );
 
-    const response = await callback(message, availableComponents);
+    const response = await getComponentChoice(message, availableComponents);
     if (!response) {
       throw new Error("Failed to fetch component choice from backend");
     }
