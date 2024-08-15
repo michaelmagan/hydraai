@@ -63,9 +63,7 @@ export default class HydraBackend {
       availableComponents,
     };
 
-    const componentChoice = await this.aiService.chooseComponent(context);
-
-    return componentChoice;
+    return this.aiService.chooseComponent(context);
   }
 
   public async hydrateComponentWithData(
