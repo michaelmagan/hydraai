@@ -44,3 +44,17 @@ export async function saveComponent(
   );
   return success;
 }
+
+export async function hydrateComponent(
+  message: string,
+  componentChoice: ComponentChoice,
+  toolResponse: any
+): Promise<ComponentChoice> {
+  const hydra = getHydraBackend();
+  const response = await hydra.hydrateComponentWithData(
+    message,
+    componentChoice,
+    toolResponse
+  );
+  return response;
+}

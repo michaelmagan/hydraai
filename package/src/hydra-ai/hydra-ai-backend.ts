@@ -66,4 +66,16 @@ export default class HydraBackend {
 
     return componentChoice;
   }
+
+  public async hydrateComponentWithData(
+    message: string,
+    componentChoice: ComponentChoice,
+    toolResponse: any
+  ): Promise<ComponentChoice> {
+    return this.aiService.hydrateComponentWithData(
+      message,
+      componentChoice,
+      toolResponse
+    );
+  }
 }

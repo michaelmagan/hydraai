@@ -28,10 +28,14 @@ export interface RegisteredComponent extends ComponentMetadata {
   contextTools: ComponentContextTool[];
 }
 
+export interface AvailableComponent extends ComponentMetadata {
+  contextTools: ComponentContextToolMetadata[];
+}
+
 export interface ComponentWithContext extends ComponentMetadata {
   context: any;
 }
 
 export interface AvailableComponents {
-  [key: string]: ComponentWithContext;
+  [key: string]: AvailableComponent;
 }
