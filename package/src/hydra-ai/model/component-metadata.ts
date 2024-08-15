@@ -3,12 +3,25 @@ import { ComponentPropsMetadata } from "./component-props-metadata";
 
 export interface ComponentMetadata {
   name: string;
+  description: string;
   props: ComponentPropsMetadata;
+}
+
+export interface ComponentContextTool {
+  getComponentContext: (...args: any[]) => Promise<any>;
+  name: string;
+  description: string;
+  parameters: {
+    name: string;
+    type: string;
+    description: string;
+    isRequired: boolean;
+  }[];
 }
 
 export interface RegisteredComponent extends ComponentMetadata {
   component: ComponentType<any>;
-  getComponentContext?: () => Promise<any>;
+  contextTools: ComponentContextTool[];
 }
 
 export interface ComponentWithContext extends ComponentMetadata {

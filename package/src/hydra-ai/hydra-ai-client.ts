@@ -1,8 +1,9 @@
 import React, { ComponentType } from "react";
 import { chooseComponent, saveComponent } from "./hydra-server-action";
-import { ComponentChoice } from "./model/component-choice";
+import { ComponentChoice } from "./model";
 import {
   AvailableComponents,
+  ComponentContextTool,
   RegisteredComponent,
 } from "./model/component-metadata";
 import { ComponentPropsMetadata } from "./model/component-props-metadata";
@@ -19,8 +20,8 @@ export default class HydraClient {
     name: string,
     description: string,
     component: ComponentType<any>,
-    propsDefinition?: ComponentPropsMetadata,
-    getComponentContext?: () => any | Promise<any>,
+    propsDefinition: ComponentPropsMetadata = {},
+    contextTools: ComponentContextTool[] = [],
     callback: (
       name: string,
       description: string,
@@ -34,14 +35,12 @@ export default class HydraClient {
     }
 
     if (!this.componentList[name]) {
-      const asyncGetComponentContext = getComponentContext
-        ? async () => await getComponentContext()
-        : undefined;
       this.componentList[name] = {
         component,
         name,
-        props: propsDefinition || {},
-        getComponentContext: asyncGetComponentContext,
+        description,
+        props: propsDefinition,
+        contextTools: contextTools,
       };
     } else {
       throw new Error(
@@ -57,7 +56,9 @@ export default class HydraClient {
       availableComponents: AvailableComponents
     ) => Promise<ComponentChoice> = chooseComponent
   ): Promise<GenerateComponentResponse | string> {
-    const availableComponents = await this.getAvailableComponents(this.componentList);
+    const availableComponents = await this.getAvailableComponents(
+      this.componentList
+    );
 
     const response = await callback(message, availableComponents);
     if (!response) {
@@ -67,7 +68,7 @@ export default class HydraClient {
     if (response.componentName === null) {
       return response.message;
     }
-    
+
     const componentEntry = this.componentList[response.componentName];
 
     if (!componentEntry) {
@@ -86,17 +87,19 @@ export default class HydraClient {
     componentRegistry: ComponentRegistry
   ): Promise<AvailableComponents> => {
     // TODO: filter list to only include components that are relevant to user query
-    
+
     const availableComponents: AvailableComponents = {};
 
     for (let name of Object.keys(componentRegistry)) {
       const componentEntry: RegisteredComponent = componentRegistry[name];
       availableComponents[name] = {
         name: componentEntry.name,
+        description: componentEntry.description,
         props: componentEntry.props,
-        context: componentEntry.getComponentContext
-          ? await componentEntry.getComponentContext()
-          : {},
+        context: {},
+        // context: componentEntry.getComponentContext
+        //   ? await componentEntry.getComponentContext()
+        //   : {},
       };
     }
 
