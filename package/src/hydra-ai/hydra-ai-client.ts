@@ -5,6 +5,7 @@ import {
   saveComponent,
 } from "./hydra-server-action";
 import { ComponentChoice } from "./model";
+import { ComponentDecision } from "./model/component-choice";
 import {
   AvailableComponent,
   AvailableComponents,
@@ -66,7 +67,7 @@ export default class HydraClient {
     getComponentChoice: (
       message: string,
       availableComponents: AvailableComponents
-    ) => Promise<ComponentChoice> = chooseComponent,
+    ) => Promise<ComponentDecision> = chooseComponent,
     hydrateComponentWithToolResponse: (
       message: string,
       component: AvailableComponent,
