@@ -1,8 +1,9 @@
 "use server";
 
 import HydraBackend from "./hydra-ai-backend";
-import { ComponentChoice } from "./model/component-choice";
+import { ComponentDecision } from "./model/component-choice";
 import {
+  AvailableComponent,
   AvailableComponents,
   ComponentContextToolMetadata,
 } from "./model/component-metadata";
@@ -23,7 +24,7 @@ const getHydraBackend = (): HydraBackend => {
 export async function chooseComponent(
   message: string,
   availableComponents: AvailableComponents
-): Promise<ComponentChoice> {
+): Promise<ComponentDecision> {
   const hydra = getHydraBackend();
   const response = await hydra.generateComponent(message, availableComponents);
   return response;
@@ -47,13 +48,13 @@ export async function saveComponent(
 
 export async function hydrateComponent(
   message: string,
-  componentChoice: ComponentChoice,
+  component: AvailableComponent,
   toolResponse: any
-): Promise<ComponentChoice> {
+): Promise<ComponentDecision> {
   const hydra = getHydraBackend();
   const response = await hydra.hydrateComponentWithData(
     message,
-    componentChoice,
+    component,
     toolResponse
   );
   return response;

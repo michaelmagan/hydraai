@@ -3,8 +3,9 @@ import { Pool } from "pg";
 import "server-only";
 import { registeredComponents } from "../db/schema";
 import AIService from "./ai-service";
-import { ComponentChoice } from "./model/component-choice";
+import { ComponentDecision } from "./model/component-choice";
 import {
+  AvailableComponent,
   AvailableComponents,
   ComponentContextToolMetadata,
 } from "./model/component-metadata";
@@ -56,7 +57,7 @@ export default class HydraBackend {
   public async generateComponent(
     message: string,
     availableComponents: AvailableComponents
-  ): Promise<ComponentChoice> {
+  ): Promise<ComponentDecision> {
     const context: InputContext = {
       prompt: message,
       availableComponents,
@@ -69,13 +70,9 @@ export default class HydraBackend {
 
   public async hydrateComponentWithData(
     message: string,
-    componentChoice: ComponentChoice,
+    component: AvailableComponent,
     toolResponse: any
-  ): Promise<ComponentChoice> {
-    return this.aiService.hydrateComponentWithData(
-      message,
-      componentChoice,
-      toolResponse
-    );
+  ): Promise<ComponentDecision> {
+    return this.aiService.hydrateComponent(message, component, toolResponse);
   }
 }

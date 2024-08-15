@@ -6,6 +6,7 @@ import {
 } from "./hydra-server-action";
 import { ComponentChoice } from "./model";
 import {
+  AvailableComponent,
   AvailableComponents,
   ComponentContextTool,
   ComponentContextToolMetadata,
@@ -66,9 +67,9 @@ export default class HydraClient {
       message: string,
       availableComponents: AvailableComponents
     ) => Promise<ComponentChoice> = chooseComponent,
-    hydrateComponentWithData: (
+    hydrateComponentWithToolResponse: (
       message: string,
-      componentChoice: ComponentChoice,
+      component: AvailableComponent,
       toolResponse: any
     ) => Promise<ComponentChoice> = hydrateComponent
   ): Promise<GenerateComponentResponse | string> {
@@ -95,9 +96,11 @@ export default class HydraClient {
 
     if (response.toolCallRequest) {
       const toolResponse = await this.runToolChoice(response);
-      const hydratedComponentChoice = await hydrateComponentWithData(
+      const chosenComponent: AvailableComponent =
+        availableComponents[response.componentName];
+      const hydratedComponentChoice = await hydrateComponentWithToolResponse(
         message,
-        response,
+        chosenComponent,
         toolResponse
       );
 
