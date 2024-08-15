@@ -4,6 +4,7 @@ import { ComponentChoice } from "./model";
 import {
   AvailableComponents,
   ComponentContextTool,
+  ComponentContextToolMetadata,
   RegisteredComponent,
 } from "./model/component-metadata";
 import { ComponentPropsMetadata } from "./model/component-props-metadata";
@@ -25,10 +26,16 @@ export default class HydraClient {
     callback: (
       name: string,
       description: string,
-      propsDefinition: ComponentPropsMetadata
+      propsDefinition: ComponentPropsMetadata,
+      contextToolDefinitions: ComponentContextToolMetadata[]
     ) => Promise<boolean> = saveComponent
   ): Promise<void> {
-    const success = await callback(name, description, propsDefinition);
+    const success = await callback(
+      name,
+      description,
+      propsDefinition,
+      contextTools.map((tool) => tool.definition)
+    );
 
     if (!success) {
       return;

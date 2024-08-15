@@ -2,7 +2,10 @@
 
 import HydraBackend from "./hydra-ai-backend";
 import { ComponentChoice } from "./model/component-choice";
-import { AvailableComponents, ComponentMetadata, RegisteredComponent } from "./model/component-metadata";
+import {
+  AvailableComponents,
+  ComponentContextToolMetadata,
+} from "./model/component-metadata";
 import { ComponentPropsMetadata } from "./model/component-props-metadata";
 
 let hydraBackend: HydraBackend | null;
@@ -12,7 +15,7 @@ const getHydraBackend = (): HydraBackend => {
     hydraBackend = new HydraBackend(
       process.env.POSTGRES_DB_URL ?? "",
       process.env.OPENAI_API_KEY ?? "",
-      "gpt-4o",
+      "gpt-4o"
     );
   }
   return hydraBackend;
@@ -29,9 +32,15 @@ export async function chooseComponent(
 export async function saveComponent(
   name: string,
   description: string,
-  propsDefinition: ComponentPropsMetadata
+  propsDefinition: ComponentPropsMetadata,
+  contextToolDefinitions: ComponentContextToolMetadata[]
 ): Promise<boolean> {
   const hydra = getHydraBackend();
-  const success = await hydra.registerComponent(name, description, propsDefinition);
+  const success = await hydra.registerComponent(
+    name,
+    description,
+    propsDefinition,
+    contextToolDefinitions
+  );
   return success;
 }

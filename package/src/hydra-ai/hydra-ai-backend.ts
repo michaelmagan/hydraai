@@ -1,22 +1,29 @@
-import "server-only";
-import AIService from "./ai-service";
-import { ComponentChoice } from "./model/component-choice";
-import { AvailableComponents, ComponentMetadata } from "./model/component-metadata";
-import { InputContext } from "./model/input-context";
 import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
+import "server-only";
 import { registeredComponents } from "../db/schema";
+import AIService from "./ai-service";
+import { ComponentChoice } from "./model/component-choice";
+import {
+  AvailableComponents,
+  ComponentContextToolMetadata,
+} from "./model/component-metadata";
 import { ComponentPropsMetadata } from "./model/component-props-metadata";
+import { InputContext } from "./model/input-context";
 
 export default class HydraBackend {
   private aiService: AIService;
   private dbConnection: NodePgDatabase;
 
-  constructor(dbConnectionUrl: string, openAIKey: string, openAIModel = "gpt-4o") {
+  constructor(
+    dbConnectionUrl: string,
+    openAIKey: string,
+    openAIModel = "gpt-4o"
+  ) {
     const pool = new Pool({
       connectionString: dbConnectionUrl,
     });
-  
+
     this.dbConnection = drizzle(pool);
     this.aiService = new AIService(openAIKey, openAIModel);
   }
@@ -24,13 +31,15 @@ export default class HydraBackend {
   public async registerComponent(
     name: string,
     description: string,
-    propsDefinition?: ComponentPropsMetadata
+    propsDefinition?: ComponentPropsMetadata,
+    contextToolDefinitions?: ComponentContextToolMetadata[]
   ): Promise<boolean> {
     try {
       await this.dbConnection.insert(registeredComponents).values({
         name,
         description,
         prop_definitions: propsDefinition,
+        context_tools: contextToolDefinitions,
       });
 
       return true;

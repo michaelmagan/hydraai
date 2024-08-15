@@ -7,8 +7,7 @@ export interface ComponentMetadata {
   props: ComponentPropsMetadata;
 }
 
-export interface ComponentContextTool {
-  getComponentContext: (...args: any[]) => Promise<any>;
+export interface ComponentContextToolMetadata {
   name: string;
   description: string;
   parameters: {
@@ -17,6 +16,11 @@ export interface ComponentContextTool {
     description: string;
     isRequired: boolean;
   }[];
+}
+
+export interface ComponentContextTool {
+  getComponentContext: (...args: any[]) => Promise<any>;
+  definition: ComponentContextToolMetadata;
 }
 
 export interface RegisteredComponent extends ComponentMetadata {
