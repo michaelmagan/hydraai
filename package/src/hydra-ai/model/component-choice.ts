@@ -1,10 +1,7 @@
-export interface ComponentChoice {
+export interface ComponentDecision {
   componentName: string | null;
   props: any | null;
   message: string;
-}
-
-export interface ComponentDecision extends ComponentChoice {
   toolCallRequest?: ToolCallRequest;
 }
 

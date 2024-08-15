@@ -8,11 +8,7 @@ import {
 } from "openai/resources";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import {
-  ComponentChoice,
-  ComponentDecision,
-  ToolCallRequest,
-} from "./model/component-choice";
+import { ComponentDecision, ToolCallRequest } from "./model/component-choice";
 import {
   AvailableComponent,
   ComponentContextToolMetadata,
@@ -185,7 +181,7 @@ ${
     };
 
     if (!componentDecision.toolCallRequest) {
-      const parsedData: ComponentChoice = await this.parseAndReturnData(
+      const parsedData = await this.parseAndReturnData(
         schema,
         generateComponentResponse.message
       );
