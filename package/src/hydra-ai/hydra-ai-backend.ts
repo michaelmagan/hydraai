@@ -40,7 +40,7 @@ export default class HydraBackend {
         name,
         description,
         prop_definitions: propsDefinition,
-        // context_tools: contextToolDefinitions,
+        context_tools: contextToolDefinitions,
       });
 
       return true;
