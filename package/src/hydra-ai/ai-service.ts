@@ -184,7 +184,7 @@ ${
       toolCallRequest: generateComponentResponse.toolCallRequest,
     };
 
-    if (generateComponentResponse.message !== "") {
+    if (!componentDecision.toolCallRequest) {
       const parsedData: ComponentChoice = await this.parseAndReturnData(
         schema,
         generateComponentResponse.message
