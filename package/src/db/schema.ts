@@ -5,7 +5,6 @@ export const registeredComponents = pgTable("registered_components", {
   name: text("name").unique().notNull(),
   description: text("description").notNull(),
   prop_definitions: jsonb("prop_definitions").notNull(),
-  context_tools: jsonb("context_tools").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow(),
   deleted_at: timestamp("deleted_at"),
