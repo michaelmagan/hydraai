@@ -82,10 +82,12 @@ Finally, if you decide that a component should be generated, you will output the
     const shouldGenerate = decisionResponse.message.match(
       /<decision>(.*?)<\/decision>/
     )?.[1];
+
     if (shouldGenerate === "false") {
       const reasoning = decisionResponse.message.match(
         /<reasoning>(.*?)<\/reasoning>/
       )?.[1];
+
       const messagePrompt = `You are an AI assistant that interacts with users and helps them perform tasks. You have determined that you cannot generate any components to help the user with their latest query for the following reason:
 <reasoning>${reasoning}</reasoning>.
 <availableComponents>
