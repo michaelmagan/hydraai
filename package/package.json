@@ -1,6 +1,6 @@
 {
   "name": "hydra-ai",
-  "version": "0.0.29",
+  "version": "0.0.31",
   "description": "",
   "main": "dist/index.js",
   "files": [
