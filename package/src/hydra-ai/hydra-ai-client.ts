@@ -27,17 +27,13 @@ export default class HydraClient {
   private componentList: ComponentRegistry = {};
   private chatHistory: ChatMessage[] = [];
   private model?: string;
-  private backendInitialized: boolean = false;
 
   constructor(model?: string) {
     this.model = model;
   }
 
   private async ensureBackendInitialized(): Promise<void> {
-    if (!this.backendInitialized) {
-      await initBackend(this.model);
-      this.backendInitialized = true;
-    }
+    await initBackend(this.model);
   }
 
   public async registerComponent(
@@ -94,6 +90,7 @@ export default class HydraClient {
     ) => Promise<ComponentChoice> = hydrateComponent
   ): Promise<GenerateComponentResponse> {
     onProgressUpdate("Choosing component");
+    await this.ensureBackendInitialized();
     const availableComponents = await this.getAvailableComponents(
       this.componentList
     );
@@ -146,7 +143,6 @@ export default class HydraClient {
       availableComponents: AvailableComponents
     ) => Promise<ComponentDecision>
   ): Promise<ComponentDecision> {
-    await this.ensureBackendInitialized();
     const messageWithContextAdditions =
       updateMessageWithContextAdditions(message);
 
@@ -167,11 +163,6 @@ export default class HydraClient {
       this.chatHistory.push({ sender: "hydra", message: response.message });
       return response;
     }
-
-    const componentEntry = this.getComponentFromRegistry(
-      response.componentName,
-      this.componentList
-    );
 
     return response;
   }
