@@ -79,65 +79,10 @@ export default class HydraClient {
       );
     }
   }
-  public async *generateComponentStream(
-    message: string,
-    getComponentChoice: (
-      messageHistory: ChatMessage[],
-      availableComponents: AvailableComponents
-    ) => Promise<ComponentDecision> = chooseComponent,
-    hydrateComponentWithToolResponse: (
-      messageHistory: ChatMessage[],
-      component: AvailableComponent,
-      toolResponse: any
-    ) => Promise<ComponentChoice> = hydrateComponent
-  ): AsyncGenerator<GenerateComponentResponse | string> {
-    yield "Choosing component";
-    const availableComponents = await this.getAvailableComponents(
-      this.componentList
-    );
-    const componentDecision = await this.getComponent(
-      message,
-      availableComponents,
-      getComponentChoice
-    );
-    if (componentDecision.componentName === null) {
-      return componentDecision.message;
-    }
-
-    if (componentDecision.toolCallRequest) {
-      yield "Getting additional data";
-      return await this.handleToolCallRequest(
-        componentDecision,
-        availableComponents,
-        hydrateComponentWithToolResponse
-      );
-    } else {
-      this.chatHistory.push({
-        sender: "hydra",
-        message: componentDecision.message,
-      });
-      this.chatHistory.push({
-        sender: "hydra",
-        message: `componentName: ${
-          componentDecision.componentName
-        } \n props: ${JSON.stringify(componentDecision.props)}`,
-      });
-
-      return {
-        component: React.createElement(
-          this.getComponentFromRegistry(
-            componentDecision.componentName,
-            this.componentList
-          ).component,
-          componentDecision.props
-        ),
-        message: componentDecision.message,
-      };
-    }
-  }
 
   public async generateComponent(
     message: string,
+    onProgressUpdate: (stage: string) => void = (progressMessage) => {},
     getComponentChoice: (
       messageHistory: ChatMessage[],
       availableComponents: AvailableComponents
@@ -147,7 +92,8 @@ export default class HydraClient {
       component: AvailableComponent,
       toolResponse: any
     ) => Promise<ComponentChoice> = hydrateComponent
-  ): Promise<GenerateComponentResponse | string> {
+  ): Promise<GenerateComponentResponse> {
+    onProgressUpdate("Choosing component");
     const availableComponents = await this.getAvailableComponents(
       this.componentList
     );
@@ -157,10 +103,11 @@ export default class HydraClient {
       getComponentChoice
     );
     if (componentDecision.componentName === null) {
-      return componentDecision.message;
+      return componentDecision;
     }
 
     if (componentDecision.toolCallRequest) {
+      onProgressUpdate("Getting additional data");
       return await this.handleToolCallRequest(
         componentDecision,
         availableComponents,
