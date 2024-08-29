@@ -79,6 +79,62 @@ export default class HydraClient {
       );
     }
   }
+  public async *generateComponentStream(
+    message: string,
+    getComponentChoice: (
+      messageHistory: ChatMessage[],
+      availableComponents: AvailableComponents
+    ) => Promise<ComponentDecision> = chooseComponent,
+    hydrateComponentWithToolResponse: (
+      messageHistory: ChatMessage[],
+      component: AvailableComponent,
+      toolResponse: any
+    ) => Promise<ComponentChoice> = hydrateComponent
+  ): AsyncGenerator<GenerateComponentResponse | string> {
+    yield "Choosing component";
+    const availableComponents = await this.getAvailableComponents(
+      this.componentList
+    );
+    const componentDecision = await this.getComponent(
+      message,
+      availableComponents,
+      getComponentChoice
+    );
+    if (componentDecision.componentName === null) {
+      return componentDecision.message;
+    }
+
+    if (componentDecision.toolCallRequest) {
+      yield "Getting additional data";
+      return await this.handleToolCallRequest(
+        componentDecision,
+        availableComponents,
+        hydrateComponentWithToolResponse
+      );
+    } else {
+      this.chatHistory.push({
+        sender: "hydra",
+        message: componentDecision.message,
+      });
+      this.chatHistory.push({
+        sender: "hydra",
+        message: `componentName: ${
+          componentDecision.componentName
+        } \n props: ${JSON.stringify(componentDecision.props)}`,
+      });
+
+      return {
+        component: React.createElement(
+          this.getComponentFromRegistry(
+            componentDecision.componentName,
+            this.componentList
+          ).component,
+          componentDecision.props
+        ),
+        message: componentDecision.message,
+      };
+    }
+  }
 
   public async generateComponent(
     message: string,
@@ -92,6 +148,57 @@ export default class HydraClient {
       toolResponse: any
     ) => Promise<ComponentChoice> = hydrateComponent
   ): Promise<GenerateComponentResponse | string> {
+    const availableComponents = await this.getAvailableComponents(
+      this.componentList
+    );
+    const componentDecision = await this.getComponent(
+      message,
+      availableComponents,
+      getComponentChoice
+    );
+    if (componentDecision.componentName === null) {
+      return componentDecision.message;
+    }
+
+    if (componentDecision.toolCallRequest) {
+      return await this.handleToolCallRequest(
+        componentDecision,
+        availableComponents,
+        hydrateComponentWithToolResponse
+      );
+    } else {
+      this.chatHistory.push({
+        sender: "hydra",
+        message: componentDecision.message,
+      });
+      this.chatHistory.push({
+        sender: "hydra",
+        message: `componentName: ${
+          componentDecision.componentName
+        } \n props: ${JSON.stringify(componentDecision.props)}`,
+      });
+
+      return {
+        component: React.createElement(
+          this.getComponentFromRegistry(
+            componentDecision.componentName,
+            this.componentList
+          ).component,
+          componentDecision.props
+        ),
+        message: componentDecision.message,
+      };
+    }
+  }
+
+  private async getComponent(
+    message: string,
+    availableComponents: AvailableComponents,
+    getComponentChoice: (
+      messageHistory: ChatMessage[],
+      availableComponents: AvailableComponents
+    ) => Promise<ComponentDecision>
+  ): Promise<ComponentDecision> {
     await this.ensureBackendInitialized();
     const messageWithContextAdditions =
       updateMessageWithContextAdditions(message);
@@ -100,10 +207,6 @@ export default class HydraClient {
       sender: "user",
       message: messageWithContextAdditions,
     });
-
-    const availableComponents = await this.getAvailableComponents(
-      this.componentList
-    );
 
     const response = await getComponentChoice(
       this.chatHistory,
@@ -115,60 +218,79 @@ export default class HydraClient {
 
     if (response.componentName === null) {
       this.chatHistory.push({ sender: "hydra", message: response.message });
-      return response.message;
+      return response;
     }
 
-    const componentEntry = this.componentList[response.componentName];
+    const componentEntry = this.getComponentFromRegistry(
+      response.componentName,
+      this.componentList
+    );
 
-    if (!componentEntry) {
-      throw new Error(
-        `Hydra tried to use Component ${response.componentName}, but it was not found.`
-      );
+    return response;
+  }
+
+  private async handleToolCallRequest(
+    response: ComponentDecision,
+    availableComponents: AvailableComponents,
+    hydrateComponentWithToolResponse: (
+      messageHistory: ChatMessage[],
+      component: AvailableComponent,
+      toolResponse: any
+    ) => Promise<ComponentDecision>
+  ): Promise<GenerateComponentResponse> {
+    if (!response.componentName) {
+      throw new Error("Component name is required to run a tool choice");
+    }
+    const toolResponse = await this.runToolChoice(response);
+    const chosenComponent: AvailableComponent =
+      availableComponents[response.componentName];
+    const hydratedComponentChoice = await hydrateComponentWithToolResponse(
+      this.chatHistory,
+      chosenComponent,
+      toolResponse
+    );
+
+    if (!hydratedComponentChoice.componentName) {
+      throw new Error("Something went wrong while hydrating component");
     }
 
-    if (response.toolCallRequest) {
-      const toolResponse = await this.runToolChoice(response);
-      const chosenComponent: AvailableComponent =
-        availableComponents[response.componentName];
-      const hydratedComponentChoice = await hydrateComponentWithToolResponse(
-        this.chatHistory,
-        chosenComponent,
-        toolResponse
-      );
+    this.chatHistory.push({
+      sender: "hydra",
+      message: hydratedComponentChoice.message,
+    });
 
-      this.chatHistory.push({
-        sender: "hydra",
-        message: hydratedComponentChoice.message,
-      });
-
-      this.chatHistory.push({
-        sender: "hydra",
-        message: `componentName: ${
-          hydratedComponentChoice.componentName
-        } \n props: ${JSON.stringify(hydratedComponentChoice.props)}`,
-      });
-
-      return {
-        component: React.createElement(
-          componentEntry.component,
-          hydratedComponentChoice.props
-        ),
-        message: hydratedComponentChoice.message,
-      };
-    }
-
-    this.chatHistory.push({ sender: "hydra", message: response.message });
     this.chatHistory.push({
       sender: "hydra",
       message: `componentName: ${
-        response.componentName
-      } \n props: ${JSON.stringify(response.props)}`,
+        hydratedComponentChoice.componentName
+      } \n props: ${JSON.stringify(hydratedComponentChoice.props)}`,
     });
 
     return {
-      component: React.createElement(componentEntry.component, response.props),
-      message: response.message,
+      component: React.createElement(
+        this.getComponentFromRegistry(
+          hydratedComponentChoice.componentName,
+          this.componentList
+        ).component,
+        hydratedComponentChoice.props
+      ),
+      message: hydratedComponentChoice.message,
     };
+  }
+
+  private getComponentFromRegistry(
+    componentName: string,
+    componentRegistry: ComponentRegistry
+  ): RegisteredComponent {
+    const componentEntry = componentRegistry[componentName];
+
+    if (!componentEntry) {
+      throw new Error(
+        `Hydra tried to use Component ${componentName}, but it was not found.`
+      );
+    }
+
+    return componentEntry;
   }
 
   private getAvailableComponents = async (
