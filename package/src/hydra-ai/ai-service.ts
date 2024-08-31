@@ -17,7 +17,7 @@ import {
 import { InputContext } from "./model/input-context";
 import { OpenAIResponse } from "./model/openai-response";
 
-const schema = z.object({
+const generateSpecifiedComponentSchema = z.object({
   componentName: z.string().describe("The name of the chosen component"),
   props: z
     .object({})
@@ -31,6 +31,16 @@ const schema = z.object({
       "The message to be displayed to the user alongside the chosen component. Depending on the component type, and the user message, this message might include a description of why a given component was chosen, and what can be seen within it, or what it does."
     ),
   reasoning: z.string().describe("The reasoning behind the decision"),
+});
+
+const shouldGenerateComponentSchema = z.object({
+  decision: z.boolean().describe("The decision to either generate a component or not"),
+  reasoning: z.string().describe("The reasoning behind the decision"),
+  componentName: z.string().optional().describe("The name of the chosen component if the decision is true"),
+});
+
+const noComponentGeneratedSchema = z.object({
+  message: z.string().describe("The message to be displayed to the user."),
 });
 
 const defaultSystemInstructions = `You are a UI/UX designer that decides what component should be rendered based on what the user interaction is.`;
@@ -156,7 +166,7 @@ ${
     : `You can also use any of the provided tools to fetch data needed to pass into the component.`
 }
 
-${this.generateZodTypePrompt(schema)}`;
+${this.generateZodTypePrompt(generateSpecifiedComponentSchema)}`;
 
     const tools = toolResponse
       ? undefined
@@ -195,7 +205,7 @@ ${this.generateZodTypePrompt(schema)}`;
 
     if (!componentDecision.toolCallRequest) {
       const parsedData = await this.parseAndReturnData(
-        schema,
+        generateSpecifiedComponentSchema,
         generateComponentResponse.message
       );
 
