@@ -7,6 +7,7 @@ import {
   ChatCompletionTool,
 } from "openai/resources";
 import { z } from "zod";
+import { zodResponseFormat } from "openai/helpers/zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { ChatMessage } from "./model/chat-message";
 import { ComponentDecision, ToolCallRequest } from "./model/component-choice";
@@ -16,6 +17,12 @@ import {
 } from "./model/component-metadata";
 import { InputContext } from "./model/input-context";
 import { OpenAIResponse } from "./model/openai-response";
+
+const shouldGenerateComponentSchema = z.object({
+  decision: z.boolean().describe("The decision to either generate a component or not"),
+  reasoning: z.string().describe("The reasoning behind the decision"),
+  componentName: z.string().optional().describe("The name of the chosen component if the decision is true"),
+});
 
 const generateSpecifiedComponentSchema = z.object({
   componentName: z.string().describe("The name of the chosen component"),
@@ -31,12 +38,6 @@ const generateSpecifiedComponentSchema = z.object({
       "The message to be displayed to the user alongside the chosen component. Depending on the component type, and the user message, this message might include a description of why a given component was chosen, and what can be seen within it, or what it does."
     ),
   reasoning: z.string().describe("The reasoning behind the decision"),
-});
-
-const shouldGenerateComponentSchema = z.object({
-  decision: z.boolean().describe("The decision to either generate a component or not"),
-  reasoning: z.string().describe("The reasoning behind the decision"),
-  componentName: z.string().optional().describe("The name of the chosen component if the decision is true"),
 });
 
 const noComponentGeneratedSchema = z.object({
@@ -69,9 +70,9 @@ export default class AIService {
 
     const decisionPrompt = `You are a simple AI assistant. Your goal is to output a boolean flag (true or false) indicating whether or not a UI component should be generated.
 To accomplish your task, you will be given a list of available components and the existing message history.
-First you will reason about whether you think a component should be generated. Reasoning should be a single sentence and output between <reasoning></reasoning> tags.
-Then you will output a boolean flag (true or false) <decision></decision> tags.
-Finally, if you decide that a component should be generated, you will output the name of the component between <component></component> tags.`;
+First you will reason about whether you think a component should be generated. Reasoning should be a single sentence and output in the 'reasoning' json field.
+Then you will output a boolean flag (true or false) in the 'decision' json field.
+Finally, if you decide that a component should be generated, you will output the name of the component in the 'componentName' json field.`;
 
     const decisionResponse = await this.callOpenAI([
       {
@@ -86,16 +87,13 @@ Finally, if you decide that a component should be generated, you will output the
             `,
       },
       ...this.chatHistoryToChatCompletionParam(context.messageHistory),
-    ]);
+    ], shouldGenerateComponentSchema, "shouldGenerateComponentSchema");
 
-    const shouldGenerate = decisionResponse.message.match(
-      /<decision>(.*?)<\/decision>/
-    )?.[1];
+    const parsedDecision = await this.parseAndReturnData(shouldGenerateComponentSchema, decisionResponse.message);
+    const shouldGenerate = parsedDecision.decision;
 
-    if (shouldGenerate === "false") {
-      const reasoning = decisionResponse.message.match(
-        /<reasoning>(.*?)<\/reasoning>/
-      )?.[1];
+    if (!shouldGenerate) {
+      const reasoning = parsedDecision.reasoning;
 
       const messagePrompt = `You are an AI assistant that interacts with users and helps them perform tasks. You have determined that you cannot generate any components to help the user with their latest query for the following reason:
 <reasoning>${reasoning}</reasoning>.
@@ -111,17 +109,15 @@ This response should be short and concise.`;
           content: messagePrompt,
         },
         ...this.chatHistoryToChatCompletionParam(context.messageHistory),
-      ]);
+      ], noComponentGeneratedSchema, "noComponentGeneratedSchema");
 
       return {
         componentName: null,
         props: null,
         message: messageResponse.message,
       };
-    } else if (shouldGenerate === "true") {
-      const componentName = decisionResponse.message.match(
-        /<component>(.*?)<\/component>/
-      )?.[1];
+    } else if (shouldGenerate) {
+      const componentName = parsedDecision.componentName;
 
       if (!componentName) {
         throw new Error("Invalid component name");
@@ -136,7 +132,8 @@ This response should be short and concise.`;
       return this.hydrateComponent(context.messageHistory, component);
     } else {
       // TODO: Handle this case. Maybe repeat the decision prompt.
-      throw new Error("Invalid decision");
+      // Response did not contain a decision.
+      throw new Error("No decision was made.");
     }
   };
 
@@ -192,8 +189,9 @@ ${this.generateZodTypePrompt(generateSpecifiedComponentSchema)}`;
           }`,
         },
       ],
-      tools,
-      true
+      generateSpecifiedComponentSchema,
+      "generateSpecifiedComponentSchema",
+      tools
     );
 
     const componentDecision: ComponentDecision = {
@@ -219,8 +217,9 @@ ${this.generateZodTypePrompt(generateSpecifiedComponentSchema)}`;
 
   async callOpenAI(
     messages: ChatCompletionMessageParam[],
+    schema: z.ZodSchema<any>,
+    schemaName: string,
     tools?: ChatCompletionTool[],
-    jsonMode: boolean = false
   ): Promise<OpenAIResponse> {
     let componentTools = tools;
     if (tools?.length === 0) {
@@ -231,7 +230,7 @@ ${this.generateZodTypePrompt(generateSpecifiedComponentSchema)}`;
       model: this.model,
       messages: messages,
       temperature: 0.1,
-      response_format: jsonMode ? { type: "json_object" } : undefined,
+      response_format: zodResponseFormat(schema, schemaName),
       tools: componentTools,
     });
 
