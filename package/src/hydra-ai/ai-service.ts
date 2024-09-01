@@ -63,6 +63,42 @@ export default class AIService {
     this.systemInstructions = systemInstructions;
   }
 
+  generateComponentSchema(
+    component: ComponentContextToolMetadata
+  ): z.ZodSchema<any> {
+    const schema: { [key: string]: z.ZodTypeAny } = {};
+
+    for (const param of component.parameters) {
+      const { name, type, isRequired, description } = param;
+      let zodType: z.ZodTypeAny;
+
+      switch (type) {
+        case 'string':
+          zodType = z.string();
+          break;
+        case 'number':
+          zodType = z.number();
+          break;
+        case 'boolean':
+          zodType = z.boolean();
+          break;
+        case 'array':
+          zodType = z.array(z.any());
+          break;
+        case 'object':
+          zodType = z.object({}).passthrough();
+          break;
+        default:
+          zodType = z.any();
+      }
+
+      schema[name] = isRequired ? zodType : zodType.optional();
+      schema[description] = zodType.describe(description);
+    }
+
+    return z.object(schema);
+  }
+
   chooseComponent = async (
     context: InputContext
   ): Promise<ComponentDecision> => {
@@ -168,6 +204,9 @@ ${this.generateZodTypePrompt(generateSpecifiedComponentSchema)}`;
     const tools = toolResponse
       ? undefined
       : this.openAIToolFromMetadata(component.contextTools);
+
+    const componentContextTools = component.contextTools.find(tool => tool.definition.name === component.name);
+    
 
     const generateComponentResponse = await this.callOpenAI(
       [
