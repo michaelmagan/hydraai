@@ -197,16 +197,11 @@ ${
         toolResponse
       )}`
     : `You can also use any of the provided tools to fetch data needed to pass into the component.`
-}
-
-${this.generateZodTypePrompt(generateSpecifiedComponentSchema)}`;
+}`;
 
     const tools = toolResponse
       ? undefined
       : this.openAIToolFromMetadata(component.contextTools);
-
-    const componentContextTools = component.contextTools.find(tool => tool.definition.name === component.name);
-    
 
     const generateComponentResponse = await this.callOpenAI(
       [
@@ -256,8 +251,8 @@ ${this.generateZodTypePrompt(generateSpecifiedComponentSchema)}`;
 
   async callOpenAI(
     messages: ChatCompletionMessageParam[],
-    schema: z.ZodSchema<any>,
-    schemaName: string,
+    responseSchema: z.ZodSchema<any>,
+    responseSchemaName: string,
     tools?: ChatCompletionTool[],
   ): Promise<OpenAIResponse> {
     let componentTools = tools;
@@ -269,7 +264,7 @@ ${this.generateZodTypePrompt(generateSpecifiedComponentSchema)}`;
       model: this.model,
       messages: messages,
       temperature: 0.1,
-      response_format: zodResponseFormat(schema, schemaName),
+      response_format: zodResponseFormat(responseSchema, responseSchemaName),
       tools: componentTools,
     });
 
@@ -369,29 +364,4 @@ ${this.generateZodTypePrompt(generateSpecifiedComponentSchema)}`;
     };
   };
 
-  generateZodTypePrompt(schema: z.ZodSchema<any>): string {
-    return `
-      Return a JSON object that matches the given Zod schema.
-      If a field is Optional and there is no input don't include in the JSON response.
-      Only use tailwinds classes where it explicitly says to use them.
-      ${this.generateFormatInstructions(schema)}
-    `;
-  }
-
-  generateFormatInstructions(schema: any): string {
-    return `You must format your output as a JSON value that adheres to a given "JSON Schema" instance.
-
-    "JSON Schema" is a declarative language that allows you to annotate and validate JSON documents.
-    For example, the example "JSON Schema" instance {{"properties": {{"foo": {{"description": "a list of test words", "type": "array", "items": {{"type": "string"}}}}}}, "required": ["foo"]}}}}
-    would match an object with one required property, "foo". The "type" property specifies "foo" must be an "array", and the "description" property semantically describes it as "a list of test words". The items within "foo" must be strings.
-    Thus, the object {{"foo": ["bar", "baz"]}} is a well-formatted instance of this example "JSON Schema". The object {{"properties": {{"foo": ["bar", "baz"]}}}} is not well-formatted.
-
-    Your output will be parsed and type-checked according to the provided schema instance, so make sure all fields in your output match the schema exactly and there are no trailing commas!
-
-    Here is the JSON Schema instance your output must adhere to. Only return valid JSON Schema.
-    \`\`\`json
-    ${JSON.stringify(zodToJsonSchema(schema))}
-    \`\`\`
-    `;
-  }
 }
