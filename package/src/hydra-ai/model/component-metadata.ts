@@ -12,10 +12,11 @@ export interface ComponentContextToolMetadata {
   description: string;
   parameters: {
     name: string;
-    type: string;
+    type: "string" | "number" | "array" | "enum";
     description: string;
     isRequired: boolean;
     items?: { type: string };
+    enumValues?: string[];
   }[];
 }
 
