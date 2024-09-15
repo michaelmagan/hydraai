@@ -40,7 +40,7 @@ A framework for creating context-aware UI in React apps. Register your component
    - `description`: A description of the component for Hydra to understand when to use it.
    - `component`: The actual React component.
    - `propsDefinition`: An object defining each available prop and its type.
-   - `contextTools`: (optional) An array of functions that Hydra can call to gather extra data (e.g., fetching items from an API) when hydrating the component. Find information on how to define contextTools [here.](/docs/context-tools.md)
+   - `contextTools`: (optional) An array of functions that Hydra can call to gather extra data (e.g., fetching items from an API) when hydrating the component. Find information on how to define contextTools [here.](/package/docs/context-tools.md)
 
    Here’s an example:
 
