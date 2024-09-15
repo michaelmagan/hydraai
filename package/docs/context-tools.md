@@ -6,7 +6,7 @@ In Hydra, **context tools** allow Hydra to fetch additional data before renderin
 
 A context tool consists of two parts:
 
-- `getComponentContext` (any) => Promise<any>: A function that is called to retrieve the data required to hydrate the component.
+- `getComponentContext` (any) => Promise< any >: A function that is called to retrieve the data required to hydrate the component.
 - `definition`: Metadata that describes the tool, including its name, description, parameters, and their types. Everything that Hydra needs to call it correctly.
 
 ### Tool Definition
@@ -55,7 +55,7 @@ Once a context tool is defined, it can be associated with a component during the
 
 ```typescript
 import TodoList from "./components/TodoList";
-import { fetchTodos } from "./context-tools/fetchTodos";
+import { fetchTodosTool } from "./context-tools/fetchTodos";
 
 hydra.registerComponent(
   "TodoList",
@@ -69,6 +69,7 @@ hydra.registerComponent(
 ```
 
 ### How Hydra Uses Context Tools
+
 When Hydra generates a component, it determines if any of the registered context tools should be used to fetch additional data. If a tool is required, Hydra will call it, passing in the necessary parameters. The tool’s response will then be used to hydrate the component.
 
 For example, when generating the `TodoList` component, Hydra might call the `fetchTodosTool` to retrieve the todo items based on the provided `userId`. Hydra will figure out how to use the response data when hydrating the props of the component.
