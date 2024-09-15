@@ -67,3 +67,10 @@ hydra.registerComponent(
   [fetchTodosTool] // Register the context tool for this component
 );
 ```
+
+### How Hydra Uses Context Tools
+When Hydra generates a component, it determines if any of the registered context tools should be used to fetch additional data. If a tool is required, Hydra will call it, passing in the necessary parameters. The tool’s response will then be used to hydrate the component.
+
+For example, when generating the `TodoList` component, Hydra might call the `fetchTodosTool` to retrieve the todo items based on the provided `userId`. Hydra will figure out how to use the response data when hydrating the props of the component.
+
+These tool calls are actually performed on the client side of your application (or wherever your HydraClient instance lives.) The result is then passed back to the HydraBackend for use in props hydration.
