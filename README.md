@@ -48,10 +48,6 @@ Chat with other users and the developers here:
 
 <p>  <a href="https://discord.gg/8RMRUPZ9RS"><img src="https://img.shields.io/discord/1251581895414911016?color=7289da&label=discord" alt="Discord"></a></p>
 
-## Report a bug or Request a feature
-
-Make a GitHub issue [here.](https://github.com/michaelmagan/hydraai/issues/new)
-
 ## How is this different from Vercel V0?
 
 We've been asked this a few times. For clarification, Vercel V0 lets you generate a component that you can copy/paste into your app's code. Hydra is for injecting components into your running app's UI on-the-fly based on context.
