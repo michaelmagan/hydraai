@@ -42,9 +42,43 @@ A framework for creating context-aware UI in React apps. Register your component
    - `propsDefinition`: An object defining each available prop and its type.
    - `contextTools`: (optional) An array of functions that Hydra can call to gather extra data (e.g., fetching items from an API) when hydrating the component. Find information on how to define contextTools [here.](/docs/context-tools.md)
 
+   Here’s an example:
+
+   ```typescript
+   // hydra-client.ts
+
+   import { HydraClient } from "hydra-ai";
+   import CurrentWeather from "./components/current-weather";
+   import RainChart from "./components/rain-chart";
+
+   const hydra = new HydraClient();
+
+   hydra.registerComponent(
+     "CurrentWeather",
+     "Displays the current weather conditions",
+     CurrentWeather,
+     {
+       temperatureFahrenheit: "number",
+       description: "string",
+       weather: '"rain" | "sun" | "cloud" | "snow" | "clear"',
+     }
+   );
+
+   hydra.registerComponent(
+     "RainChart",
+     "Shows rain probability over time",
+     RainChart,
+     {
+       data: "{ hourOrDay: string; rainChancePercent: number }[]",
+     }
+   );
+
+   export default hydra;
+   ```
+
 4. **Have Hydra Pick and Hydrate Components Based on Context**
 
-   To have Hydra use of the registered components, you can call `generateComponent`:
+   To have Hydra use one of the registered components, you can call `generateComponent`:
 
    ```typescript
    const component = await hydra.generateComponent(message);
@@ -63,9 +97,7 @@ A framework for creating context-aware UI in React apps. Register your component
        useState<ReactElement | null>(null);
 
      const fetchComponent = async (message: string) => {
-       const component = await hydra.generateComponent(message, (progress) => {
-         console.log(`Progress: ${progress}`);
-       });
+       const component = await hydra.generateComponent(message);
        setDynamicComponent(component);
      };
 
