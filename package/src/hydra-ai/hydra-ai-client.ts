@@ -1,5 +1,6 @@
 import React, { ComponentType } from "react";
 import { updateMessageWithContextAdditions } from "./context-utils";
+import { hydraGenerate, hydraHydrate } from "./hydra-api/hydra-api-service";
 import {
   chooseComponent,
   hydrateComponent,
@@ -28,10 +29,12 @@ export default class HydraClient {
   private chatHistory: ChatMessage[] = [];
   private model?: string;
   private provider?: string;
+  private hydraApiKey?: string;
 
-  constructor(model?: string, provider?: string) {
+  constructor(model?: string, provider?: string, hydraApiKey?: string) {
     this.model = model;
     this.provider = provider;
+    this.hydraApiKey = hydraApiKey;
   }
 
   private async ensureBackendInitialized(): Promise<void> {
@@ -78,18 +81,36 @@ export default class HydraClient {
     }
   }
 
+  private getDefaultComponentChoiceFunction = () => {
+    if (this.hydraApiKey) {
+      return hydraGenerate;
+    } else {
+      return chooseComponent;
+    }
+  };
+
+  private getDefaultHydrateComponentFunction = () => {
+    if (this.hydraApiKey) {
+      return hydraHydrate;
+    } else {
+      return hydrateComponent;
+    }
+  };
+
   public async generateComponent(
     message: string,
     onProgressUpdate: (stage: string) => void = (progressMessage) => {},
     getComponentChoice: (
       messageHistory: ChatMessage[],
-      availableComponents: AvailableComponents
-    ) => Promise<ComponentDecision> = chooseComponent,
+      availableComponents: AvailableComponents,
+      apiKey?: string
+    ) => Promise<ComponentDecision> = this.getDefaultComponentChoiceFunction(),
     hydrateComponentWithToolResponse: (
       messageHistory: ChatMessage[],
       component: AvailableComponent,
-      toolResponse: any
-    ) => Promise<ComponentChoice> = hydrateComponent
+      toolResponse: any,
+      apiKey?: string
+    ) => Promise<ComponentChoice> = this.getDefaultHydrateComponentFunction()
   ): Promise<GenerateComponentResponse> {
     onProgressUpdate("Choosing component");
     await this.ensureBackendInitialized();
@@ -142,7 +163,8 @@ export default class HydraClient {
     availableComponents: AvailableComponents,
     getComponentChoice: (
       messageHistory: ChatMessage[],
-      availableComponents: AvailableComponents
+      availableComponents: AvailableComponents,
+      apiKey?: string
     ) => Promise<ComponentDecision>
   ): Promise<ComponentDecision> {
     const messageWithContextAdditions =
@@ -155,7 +177,8 @@ export default class HydraClient {
 
     const response = await getComponentChoice(
       this.chatHistory,
-      availableComponents
+      availableComponents,
+      this.hydraApiKey
     );
     if (!response) {
       throw new Error("Failed to fetch component choice from backend");
@@ -175,7 +198,8 @@ export default class HydraClient {
     hydrateComponentWithToolResponse: (
       messageHistory: ChatMessage[],
       component: AvailableComponent,
-      toolResponse: any
+      toolResponse: any,
+      apiKey?: string
     ) => Promise<ComponentDecision>
   ): Promise<GenerateComponentResponse> {
     if (!response.componentName) {
@@ -187,7 +211,8 @@ export default class HydraClient {
     const hydratedComponentChoice = await hydrateComponentWithToolResponse(
       this.chatHistory,
       chosenComponent,
-      toolResponse
+      toolResponse,
+      this.hydraApiKey
     );
 
     if (!hydratedComponentChoice.componentName) {
