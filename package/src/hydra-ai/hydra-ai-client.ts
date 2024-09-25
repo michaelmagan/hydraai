@@ -43,21 +43,38 @@ export default class HydraClient {
     }
   }
 
+  private async storeComponent(
+    name: string,
+    description: string,
+    propsDefinition: ComponentPropsMetadata,
+    contextToolDefinitions: ComponentContextToolMetadata[]
+  ): Promise<boolean> {
+    if (!this.hydraApiKey) {
+      await this.ensureBackendInitialized();
+      return saveComponent(
+        name,
+        description,
+        propsDefinition,
+        contextToolDefinitions
+      );
+    }
+    return true;
+  }
+
   public async registerComponent(
     name: string,
     description: string,
     component: ComponentType<any>,
     propsDefinition: ComponentPropsMetadata = {},
     contextTools: ComponentContextTool[] = [],
-    callback: (
+    storeComponent: (
       name: string,
       description: string,
       propsDefinition: ComponentPropsMetadata,
       contextToolDefinitions: ComponentContextToolMetadata[]
-    ) => Promise<boolean> = saveComponent
+    ) => Promise<boolean> = this.storeComponent
   ): Promise<void> {
-    await this.ensureBackendInitialized();
-    const success = await callback(
+    const success = await storeComponent(
       name,
       description,
       propsDefinition,
