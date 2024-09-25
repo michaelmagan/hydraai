@@ -6,19 +6,21 @@ import {
   AvailableComponents,
 } from "../model/component-metadata";
 
-const BASE_URL = "http://localhost:3000";
-
 export const hydraGenerate = async (
   messageHistory: ChatMessage[],
   availableComponents: AvailableComponents,
-  apiKey?: string
+  apiKey?: string,
+  url?: string
 ): Promise<ComponentDecision> => {
   if (!apiKey) {
     throw new Error("API key is required for using hydraAPI");
   }
+  if (!url) {
+    throw new Error("URL is required for using hydraAPI");
+  }
 
   try {
-    const response = await fetch(`${BASE_URL}/components/generate`, {
+    const response = await fetch(`${url}/components/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,13 +48,17 @@ export const hydraHydrate = async (
   messageHistory: ChatMessage[],
   component: AvailableComponent,
   toolResponse: any,
-  apiKey?: string
+  apiKey?: string,
+  url?: string
 ): Promise<ComponentChoice> => {
   if (!apiKey) {
     throw new Error("API key is required for using hydraAPI");
   }
+  if (!url) {
+    throw new Error("URL is required for using hydraAPI");
+  }
   try {
-    const response = await fetch(`${BASE_URL}/components/hydrate`, {
+    const response = await fetch(`${url}/components/hydrate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
