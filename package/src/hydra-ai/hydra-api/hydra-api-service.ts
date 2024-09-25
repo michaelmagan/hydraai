@@ -6,7 +6,7 @@ import {
   AvailableComponents,
 } from "../model/component-metadata";
 
-const BASE_URL = "http://localhost:3000/components";
+const BASE_URL = "http://localhost:3000";
 
 export const hydraGenerate = async (
   messageHistory: ChatMessage[],
@@ -18,7 +18,7 @@ export const hydraGenerate = async (
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/generate`, {
+    const response = await fetch(`${BASE_URL}/components/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export const hydraHydrate = async (
     throw new Error("API key is required for using hydraAPI");
   }
   try {
-    const response = await fetch(`${BASE_URL}/hydrate`, {
+    const response = await fetch(`${BASE_URL}/components/hydrate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
