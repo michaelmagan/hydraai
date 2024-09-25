@@ -38,7 +38,9 @@ export default class HydraClient {
   }
 
   private async ensureBackendInitialized(): Promise<void> {
-    await initBackend(this.model, this.provider as Provider | undefined);
+    if (!this.hydraApiKey) {
+      await initBackend(this.model, this.provider as Provider | undefined);
+    }
   }
 
   public async registerComponent(
