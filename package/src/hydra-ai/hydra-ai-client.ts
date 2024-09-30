@@ -21,6 +21,19 @@ export interface HydraClientOptions {
   provider?: string;
   hydraApiKey?: string;
   hydraApiUrl?: string;
+  getComponentChoice?: (
+    messageHistory: ChatMessage[],
+    availableComponents: AvailableComponents,
+    apiKey?: string,
+    url?: string
+  ) => Promise<ComponentDecision>;
+  hydrateComponentWithToolResponse?: (
+    messageHistory: ChatMessage[],
+    component: AvailableComponent,
+    toolResponse: any,
+    apiKey?: string,
+    url?: string
+  ) => Promise<ComponentChoice>;
 }
 
 export default class HydraClient {
@@ -30,17 +43,34 @@ export default class HydraClient {
   private provider?: string;
   private hydraApiKey?: string;
   private hydraApiUrl?: string;
+  private getComponentChoice: (
+    messageHistory: ChatMessage[],
+    availableComponents: AvailableComponents,
+    apiKey?: string,
+    url?: string
+  ) => Promise<ComponentDecision>;
+  private hydrateComponentWithToolResponse: (
+    messageHistory: ChatMessage[],
+    component: AvailableComponent,
+    toolResponse: any,
+    apiKey?: string,
+    url?: string
+  ) => Promise<ComponentChoice>;
 
   constructor({
     model,
     provider,
     hydraApiKey,
     hydraApiUrl,
+    getComponentChoice = hydraGenerate,
+    hydrateComponentWithToolResponse = hydraHydrate,
   }: HydraClientOptions = {}) {
     this.model = model;
     this.provider = provider;
     this.hydraApiKey = hydraApiKey;
     this.hydraApiUrl = hydraApiUrl;
+    this.getComponentChoice = getComponentChoice;
+    this.hydrateComponentWithToolResponse = hydrateComponentWithToolResponse;
   }
 
   public async registerComponent(
@@ -64,20 +94,7 @@ export default class HydraClient {
 
   public async generateComponent(
     message: string,
-    onProgressUpdate: (stage: string) => void = (progressMessage) => {},
-    getComponentChoice: (
-      messageHistory: ChatMessage[],
-      availableComponents: AvailableComponents,
-      apiKey?: string,
-      url?: string
-    ) => Promise<ComponentDecision> = hydraGenerate,
-    hydrateComponentWithToolResponse: (
-      messageHistory: ChatMessage[],
-      component: AvailableComponent,
-      toolResponse: any,
-      apiKey?: string,
-      url?: string
-    ) => Promise<ComponentChoice> = hydraHydrate
+    onProgressUpdate: (stage: string) => void = (progressMessage) => {}
   ): Promise<GenerateComponentResponse> {
     onProgressUpdate("Choosing component");
     const availableComponents = await this.getAvailableComponents(
@@ -86,7 +103,7 @@ export default class HydraClient {
     const componentDecision = await this.getComponent(
       message,
       availableComponents,
-      getComponentChoice
+      this.getComponentChoice
     );
     if (componentDecision.componentName === null) {
       return componentDecision;
@@ -97,7 +114,7 @@ export default class HydraClient {
       return await this.handleToolCallRequest(
         componentDecision,
         availableComponents,
-        hydrateComponentWithToolResponse
+        this.hydrateComponentWithToolResponse
       );
     } else {
       this.chatHistory.push({
