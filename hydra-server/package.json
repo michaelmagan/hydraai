@@ -1,7 +1,7 @@
 {
   "name": "hydra-ai-backend",
   "version": "0.0.1",
-  "description": "Server package for running hydra-ai",
+  "description": "Server package for self-hosting hydra-ai",
   "main": "dist/index.js",
   "files": [
     "dist"
